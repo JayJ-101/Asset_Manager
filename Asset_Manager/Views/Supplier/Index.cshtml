@@ -1,0 +1,80 @@
+﻿@model SupplierListViewModel
+@{
+    ViewData["Title"] = "Manage Supplier";
+
+    SupplierGridData current = Model.CurrentRoute;
+    GridData routes = Model.CurrentRoute.Clone();
+}
+
+<h5 class="mt-1"><a asp-action="Add">Add a Supplier</a></h5>
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row">
+        <!-- Search Bar -->
+        <div class="col-md-5">
+            <label for="SearchQuery" class="form-label">Search Suppliers</label>
+            <input type="text" id="SearchQuery" name="SearchQuery"
+                   value="@Model.CurrentRoute.SearchQuery" class="form-control"
+                   placeholder="Enter supplier name or contact">
+        </div>
+        <!-- Submit Button -->
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary mt-2">Apply</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped table-sm">
+    <thead class="table-dark text-white">
+        <tr>
+            <th>
+                @{
+                    routes.SetSortAndDirection(
+                    nameof(Supplier.SupplierName), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Supplier Name</a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(
+                    nameof(Supplier.ContactPerson), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Contact Person</a>
+            </th>
+            <th>Phone Number</th>
+            <th>Email Address</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Supplier supplier in Model.Suppliers)
+        {
+            <tr>
+                <td>@supplier.SupplierName</td>
+                <td>@supplier.ContactPerson</td>
+                <td>@supplier.PhoneNumber</td>
+                <td>@supplier.Email</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@supplier.SupplierId" class="btn btn-sm btn-primary">Edit</a>
+                    |
+                    <a asp-action="Delete" asp-route-id="@supplier.SupplierId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Paging Links *@
+@{
+    routes = current.Clone();
+    for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+        string active = @Nav.Active(i, current.PageNumber);
+        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()"
+           class="btn btn-outline-primary mb-2 @active">@i</a>
+    }
+}

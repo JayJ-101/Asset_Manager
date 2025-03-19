@@ -1,0 +1,126 @@
+﻿@{
+    // use current controller or area to determine if tab is active
+    var current = ViewContext.RouteData.Values["area"]?.ToString() ??
+        ViewContext.RouteData.Values["controller"]!.ToString()!;
+
+    // use current action to determine active tab for register and change password tabs
+    var action = ViewContext.RouteData.Values["action"]?.ToString()!;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Asset_Manager</title>
+ 
+   
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/js/site.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Asset_Manager.styles.css" asp-append-version="true" />
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Asset_Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link @Nav.Active("Home", current)"
+                               asp-action="Index" asp-controller="Home" asp-area="">
+                                <span class="fas fa-home"></span>&nbsp;Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Nav.Active("Asset", current)"
+                               asp-action="Index" asp-controller="Asset" asp-area="">
+                                <span class="fas fa-book-open"></span>&nbsp;Assets
+                            </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Nav.Active("PurchaseOrder", current)"
+                           asp-action="Index" asp-controller="PurchaseOrder" asp-area="">
+                            <span class="fas fa-book-open"></span>&nbsp;Purchase Order
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Nav.Active("Supplier", current)"
+                           asp-action="Index" asp-controller="Supplier" asp-area="">
+                            <span class="fas fa-book-open"></span>&nbsp;Supplier
+                        </a>
+                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Nav.Active("Category", current)"
+                               asp-action="Index" asp-controller="Category" asp-area="">
+                                <span class="fas fa-feather-alt"></span>&nbsp;Category
+                            </a>
+                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Nav.Active("Branch", current)"
+                           asp-action="Index" asp-controller="Branch" asp-area="">
+                            <span class="fas fa-feather-alt"></span>&nbsp;Branch
+                        </a>
+                    </li>
+                    </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData.Keys.Contains("message"))
+            {
+              @*   <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3 ">
+                    <div id="successToast" class="toast align-items-center  border-0 bg-success" role="alert" aria-live="polite" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body fw-bold">
+                                @TempData["message"]
+                            </div>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+              </div> *@
+                <div class="alert alert-dismissible alert-success">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <h4 class="alert-heading">Success!</h4>
+                    <p class="mb-0">  @TempData["message"]</p>
+                </div>
+
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - Asset_Manager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastEl = document.getElementById("successToast");
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    });
+</script>
+
