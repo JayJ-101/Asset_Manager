@@ -37,6 +37,11 @@ namespace Asset_Manager.Controllers
                                       po.Status.Contains(values.SearchQuery);
             }
 
+            if (values.SupplierId.HasValue)
+            {
+                options.Where = a => a.SupplierId == values.SupplierId;
+            }
+
             var vm = new PurchaseOrderListViewModel
             {
                 PurchaseOrders = purchaseOrderData.List(options),

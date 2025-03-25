@@ -57,6 +57,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link @Nav.Active("PurchaseOrderItem", current)"
+                           asp-action="Index" asp-controller="PurchaseOrderItem" asp-area="">
+                            <span class="fas fa-book-open"></span>&nbsp; Order Item
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link @Nav.Active("Supplier", current)"
                            asp-action="Index" asp-controller="Supplier" asp-area="">
                             <span class="fas fa-book-open"></span>&nbsp;Supplier

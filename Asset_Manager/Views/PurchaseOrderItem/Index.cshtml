@@ -1,0 +1,108 @@
+﻿@model PurchaseOrderItemListViewModel
+@{
+    ViewData["Title"] = "Manage Purchase Order Item";
+
+
+    PurchaseOrderItemGridData current = Model.CurrentRoute;
+    GridData routes = Model.CurrentRoute.Clone();
+}
+
+<h5 class="mt-1"><a asp-action="Add">Add Item</a></h5>
+
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="SearchQuery" class="form-label">Search Asset</label>
+            <input type="text" id="SearchQuery" name="SearchQuery"
+                   value="@Model.CurrentRoute.SearchQuery" class="form-control"
+                   placeholder="Enter supplier name or contact">
+        </div>
+        <!-- Category Dropdown -->
+        <div class="col-md-2">
+            <label for="CategoryId" class="form-label">Category</label>
+            <select id="CategoryId" name="CategoryId" class="form-select">
+                <option value="">All</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId" selected="@(category.CategoryId == Model.CurrentRoute.CategoryId)">
+                        @category.CategoryName
+                    </option>
+                }
+            </select>
+        </div>
+        <!-- Status Dropdown -->
+        <div class="col-md-2">
+            <label for="Status" class="form-label">Status</label>
+            <select id="Status" name="Status" class="form-select">
+                <option value="">All</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status" selected="@(status == Model.CurrentRoute.Status)">
+                        @status
+                    </option>
+                }
+            </select>
+        </div>
+        <!-- Submit Button -->
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary mt-2">Apply</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped table-sm"> 
+    <thead class="table-dark text-white">
+        <tr>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(PurchaseOrder.OrderNumber), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Order Number</a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(Category.CategoryName), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Category</a>
+            </th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>TotalPrice</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(PurchaseOrderItem po in Model.PurchaseOrderItem)
+        {
+            <tr> 
+                <td>@po.PurchaseOrder?.OrderNumber</td>
+                <td>@po.Category?.CategoryName</td>
+                <td>@po.Quantity</td>
+                <td>@po.UnitPrice</td>
+                <td>@po.TotalPrice</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@po.OrderITemId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@po.OrderITemId" class="btn btn-sm btn-primary">Delete</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!-- Paging Links -->
+@{
+    routes = current.Clone();
+    for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+        string active = @Nav.Active(i, current.PageNumber);
+        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()"
+           class="btn btn-outline-primary mb-2 @active">@i</a>
+    }
+}

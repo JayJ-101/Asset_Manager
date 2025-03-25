@@ -21,6 +21,7 @@ namespace Asset_Manager.Models
             modelBuilder.ApplyConfiguration(new BranchConfiguration());
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
             modelBuilder.ApplyConfiguration(new PurchaseOrderConfiguration());
+            modelBuilder.ApplyConfiguration(new PurchaseOrderItemConfig());
             //modelBuilder.ApplyConfiguration(new AssignmentConfiguration());
             //modelBuilder.ApplyConfiguration(new MaintenanceLogConfiguration());
         }

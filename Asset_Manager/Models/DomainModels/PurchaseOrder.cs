@@ -13,9 +13,11 @@ namespace Asset_Manager.Models
 
         [Required(ErrorMessage = "Purchase date is required.")]
         [DataType(DataType.Date)]
+        [PurchaseDateValidation(ErrorMessage = "Warranty Expiry Date must be in the future.")]
         public DateTime PurchaseDate { get; set; } = DateTime.Now;
 
         [DataType(DataType.Date)]
+        [ReceivedDateValidation(ErrorMessage = "Warranty Expiry Date must be in the future.")]
         public DateTime? ReceivedDate { get; set; }
 
         [Required(ErrorMessage = "Status is required.")]
@@ -32,6 +34,8 @@ namespace Asset_Manager.Models
         [ValidateNever]
         public Supplier Supplier { get; set; } = null!;
 
+        // Updated: Link to PurchaseOrderItems
+        public ICollection<PurchaseOrderItem> Items { get; set; } = new List<PurchaseOrderItem>();
 
         public ICollection<Asset> Assets { get; set; } = new List<Asset>();
     }
