@@ -113,14 +113,7 @@
                    asp-all-route-data="@routes.ToDictionary()"
                    class="text-white text-decoration-none">Status</a>
             </th>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.PurchaseDate), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Purchase Date</a>
-            </th>
+            
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.WarrantyExpiryDate), current);
@@ -144,7 +137,7 @@
                 <td>@asset.Category?.CategoryName</td>
                 <td>@asset.Branch?.BranchName</td>
                 <td>@asset.Status</td>
-                <td>@asset.PurchaseDate.ToShortDateString()</td>
+                
                 <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Edit</a>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Asset_Manager.Models  
@@ -9,6 +10,7 @@ namespace Asset_Manager.Models
         public int PurchaseOrderId { get; set; }
 
         [Required(ErrorMessage = "Order number is required.")]
+        [Remote("CheckOrder", "Validation")]
         public string OrderNumber { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Purchase date is required.")]

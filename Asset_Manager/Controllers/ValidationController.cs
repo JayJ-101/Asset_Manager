@@ -35,7 +35,7 @@ namespace Asset_Manager.Controllers
             }
         }
 
-        public JsonResult CheckBrnach(string branchName, string operation)
+        public JsonResult CheckBranch(string branchName, string operation)
         {
             var validate = new Validate(TempData);  
             validate.CheckBranch(branchName, operation, branchData);

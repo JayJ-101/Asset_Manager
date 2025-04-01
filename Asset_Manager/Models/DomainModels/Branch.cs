@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Asset_Manager.Models  
 {
@@ -8,6 +9,7 @@ namespace Asset_Manager.Models
         public int BranchId { get; set; }
 
         [Required(ErrorMessage = "Branch name is required.")]
+        [Remote("CheckBranch","Validation")]
         public string BranchName { get; set; } = string.Empty;
 
         public ICollection<Asset> Assets { get; set; } = new List<Asset>();

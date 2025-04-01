@@ -29,8 +29,6 @@ namespace Asset_Manager.Controllers
 
             if (values.IsSortByCategory)
                 options.OrderBy = a => a.CategoryId;
-            else if (values.IsSortByDate)
-                options.OrderBy = a => a.PurchaseDate;
             else
                 options.OrderBy = a => a.AssetName;
 
@@ -148,10 +146,9 @@ namespace Asset_Manager.Controllers
             if (ModelState.IsValid)
             {
               
-                var book = GetAsset(vm.Asset.AssetId);
-                book.Status = vm.Asset.Status;
-                book.CategoryId = vm.Asset.CategoryId;
-                book.Branch = vm.Asset.Branch;
+                var asset = GetAsset(vm.Asset.AssetId);
+                asset.Status = vm.Asset.Status;
+                asset.Branch = vm.Asset.Branch;
 
                 // don't need to call assetData.Update() - DB context is tracking   
                 assetData.Save();

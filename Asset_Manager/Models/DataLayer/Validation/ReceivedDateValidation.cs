@@ -6,11 +6,11 @@ namespace Asset_Manager.Models
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is DateTime warrantyExpiryDate)
+            if (value is DateTime ReceivedDate)
             {
-                if (warrantyExpiryDate < DateTime.Now.Date)
+                if (ReceivedDate > DateTime.Now.Date)
                 {
-                    return new ValidationResult("Warranty Expiry Date must be in the future.");
+                    return new ValidationResult("Recieved date can't be greater than today.");
                 }
             }
             return ValidationResult.Success;

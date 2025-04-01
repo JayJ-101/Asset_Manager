@@ -11,9 +11,7 @@ namespace Asset_Manager.Models
         public bool IsSortByCategory =>
             SortField.EqualsNoCase(nameof(Asset.CategoryId));
 
-        [JsonIgnore]
-        public bool IsSortByDate =>
-            SortField.EqualsNoCase(nameof(Asset.PurchaseDate));
+       
 
         [JsonIgnore]
         public bool IsSortByAssetName =>

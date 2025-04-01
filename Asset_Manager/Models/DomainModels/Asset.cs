@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Asset_Manager.Models  
@@ -13,6 +14,7 @@ namespace Asset_Manager.Models
         public string AssetName { get; set; } =string.Empty;
 
         [Required(ErrorMessage = "Serial Number Required")]
+        [Remote("CheckAsset", "Validation")]
         public string SerialNumber { get; set; } = string.Empty;
 
         public int CategoryId { get; set; }
@@ -24,10 +26,6 @@ namespace Asset_Manager.Models
         public Branch Branch { get; set; } = null!; 
 
         public string Status { get; set; } = "Available";
-
-        [DataType(DataType.Date)]
-        [Required(ErrorMessage = "Purchase Date is required.")]
-        public DateTime PurchaseDate { get; set; } = DateTime.Now;
          
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Warranty Expiry Date is required.")]
@@ -37,6 +35,7 @@ namespace Asset_Manager.Models
         [Required]
         public int PurchaseOrderId { get; set; }
         // Navigation property for PurchaseOrders (Many-to-Many)
+        [ValidateNever]
         public PurchaseOrder PurchaseOrder { get; set; } = null!;
 
     }
