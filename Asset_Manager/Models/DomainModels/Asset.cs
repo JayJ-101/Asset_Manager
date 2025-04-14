@@ -33,10 +33,8 @@ namespace Asset_Manager.Models
         public DateTime WarrantyExpiryDate { get; set; } = DateTime.Now.AddYears(2);
 
         [Required]
-        public int PurchaseOrderId { get; set; }
-        // Navigation property for PurchaseOrders (Many-to-Many)
-        [ValidateNever]
-        public PurchaseOrder PurchaseOrder { get; set; } = null!;
+        public ICollection<AssetAssignment>? AssetAssignments { get; set; }
+
 
     }
 }

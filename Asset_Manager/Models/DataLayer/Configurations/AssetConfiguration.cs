@@ -17,11 +17,7 @@ namespace Asset_Manager.Models
                 .HasForeignKey(a => a.BranchId);
 
 
-            // Configure relationship with PurchaseOrder
-            entity.HasOne(a => a.PurchaseOrder)
-                  .WithMany(p => p.Assets)
-                  .HasForeignKey(a => a.PurchaseOrderId)
-                  .OnDelete(DeleteBehavior.Restrict);
+           
 
         }
     }

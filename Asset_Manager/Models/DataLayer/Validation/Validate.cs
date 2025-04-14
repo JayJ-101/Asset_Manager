@@ -93,22 +93,6 @@ namespace Asset_Manager.Models
         public void ClearAsset() => tempData.Remove(AssetKey);
         public bool IsAssetChecked => tempData.Keys.Contains(AssetKey);
 
-        public void CheckPurchaseOrder(string orderNumber, string operation, Repository<PurchaseOrder> data)
-        {
-            PurchaseOrder? entity = null;
-            if (operation.EqualsNoCase("add")) // only check database on add
-            {
-                entity = data.Get(new QueryOptions<PurchaseOrder>
-                {
-                    Where = po => po.OrderNumber == orderNumber
-                });
-            }
-            IsValid = (entity == null) ? true : false;
-            ErrorMessage = (IsValid) ? "" :
-                $"Serial number {entity!.OrderNumber} is already in the database.";
-        }
-        public void MarkOrderChecked() => tempData[OrderKey] = true;
-        public void ClearOrder() => tempData.Remove(OrderKey);
-        public bool IsOrderChecked => tempData.Keys.Contains(OrderKey);
+       
     }
 }

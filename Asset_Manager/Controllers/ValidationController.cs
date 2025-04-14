@@ -8,14 +8,14 @@ namespace Asset_Manager.Controllers
         private Repository<Category> categoryData { get; set; } 
         private Repository<Branch> branchData { get; set; }
         private Repository<Asset> assetData { get; set; }
-        private Repository<PurchaseOrder> purchaseOrderData { get; set; }
+        
 
         public ValidationController(AssetDbContext ctx)
         {
             categoryData = new Repository<Category>(ctx);
             branchData = new Repository<Branch>(ctx);
             assetData = new Repository<Asset>(ctx);
-            purchaseOrderData = new Repository<PurchaseOrder>(ctx);
+           
         }
 
 
@@ -65,20 +65,7 @@ namespace Asset_Manager.Controllers
             }
         }
 
-        public JsonResult CheckOrder(string orderNumber, string operation)
-        {
-            var validate = new Validate(TempData);
-            validate.CheckPurchaseOrder(orderNumber, operation, purchaseOrderData);
-            if (validate.IsValid)
-            {
-                validate.MarkOrderChecked();
-                return Json(true);
-            }
-            else
-            {
-                return Json(validate.ErrorMessage);
-            }
-        }
+       
 
     }
 }

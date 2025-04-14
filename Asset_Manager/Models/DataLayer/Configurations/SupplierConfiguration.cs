@@ -8,11 +8,7 @@ namespace Asset_Manager.Models
         public void Configure(EntityTypeBuilder<Supplier> entity)
         {
 
-            // Configure relationship with PurchaseOrder
-            entity.HasMany(s => s.PurchaseOrders)
-                  .WithOne(p => p.Supplier)
-                  .HasForeignKey(p => p.SupplierId)
-                  .OnDelete(DeleteBehavior.Restrict);
+            
 
 
             entity.HasData(

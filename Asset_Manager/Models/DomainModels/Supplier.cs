@@ -23,8 +23,7 @@ namespace Asset_Manager.Models
         [Required, StringLength(300)]
         public string Address { get; set; } = string.Empty;
 
-        // Navigation Property
-        public ICollection<PurchaseOrder> PurchaseOrders { get; set; } = new List<PurchaseOrder>();
+       
 
 
     }
