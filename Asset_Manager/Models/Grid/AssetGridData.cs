@@ -22,7 +22,7 @@ namespace Asset_Manager.Models
 
         // Filter Properties
         public int? CategoryId { get; set; }
-        public int? BranchId { get; set; }
+       
         public string Status { get; set; }
     }
 }

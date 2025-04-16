@@ -23,8 +23,8 @@ namespace Asset_Manager.Models
         [Required, StringLength(300)]
         public string Address { get; set; } = string.Empty;
 
-       
 
 
+        public ICollection<Asset>? Assets { get; set; }
     }
 }

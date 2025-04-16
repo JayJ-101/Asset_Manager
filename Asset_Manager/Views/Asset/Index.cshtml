@@ -33,19 +33,6 @@
             </select>
         </div>
 
-        <!-- Branch Dropdown -->
-        <div class="col-md-2">
-            <label for="BranchId" class="form-label">Branch</label>
-            <select for="BranchId" name="BranchId" class="form-select">
-                <option value="">All</option>
-                @foreach (var branch in Model.Branches)
-                {
-                    <option value="@branch.BranchId" selected="@(branch.BranchId == Model.CurrentRoute.BranchId)">
-                        @branch.BranchName
-                    </option>
-                }
-            </select>
-        </div>
 
         <!-- Status Dropdown -->
         <div class="col-md-2">
@@ -88,6 +75,16 @@
                    asp-all-route-data="@routes.ToDictionary()"
                    class="text-white text-decoration-none">Serial Number</a>
             </th>
+
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(Asset.SupplierId), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Supplier</a>
+            </th>
+
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.CategoryId), current);
@@ -96,14 +93,7 @@
                    asp-all-route-data="@routes.ToDictionary()"
                    class="text-white text-decoration-none">Category</a>
             </th>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.BranchId), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Branch</a>
-            </th>
+            
            
             <th>
                 @{
@@ -135,7 +125,7 @@
                 <td>@asset.AssetName</td>
                 <td>@asset.SerialNumber</td>
                 <td>@asset.Category?.CategoryName</td>
-                <td>@asset.Branch?.BranchName</td>
+               
                 <td>@asset.Status</td>
                 
                 <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>

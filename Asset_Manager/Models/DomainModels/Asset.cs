@@ -21,9 +21,10 @@ namespace Asset_Manager.Models
         [ValidateNever]
         public Category Category { get; set; } = null!;
 
-        public int BranchId { get; set; }
+        [Required]
+        public int SupplierId { get; set; }
         [ValidateNever]
-        public Branch Branch { get; set; } = null!; 
+        public Supplier Supplier { get; set; } = null!;
 
         public string Status { get; set; } = "Available";
          
@@ -32,8 +33,8 @@ namespace Asset_Manager.Models
         [WarrantyExpiryDateValidation(ErrorMessage = "Warranty Expiry Date must be in the future.")]
         public DateTime WarrantyExpiryDate { get; set; } = DateTime.Now.AddYears(2);
 
-        [Required]
-        public ICollection<AssetAssignment>? AssetAssignments { get; set; }
+        public ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
+
 
 
     }

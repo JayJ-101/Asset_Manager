@@ -12,13 +12,25 @@ namespace Asset_Manager.Models
                 .HasForeignKey(a => a.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(a => a.Branch)
-                .WithMany(b => b.Assets)
-                .HasForeignKey(a => a.BranchId);
 
 
-           
+            // Asset has one Supplier
+            entity.HasOne(a => a.Supplier)
+                  .WithMany(s => s.Assets)
+                  .HasForeignKey(a => a.SupplierId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
+            // Asset has many Assignments
+            entity.HasMany(a => a.AssetAssignments)
+                  .WithOne(aa => aa.Asset)
+                  .HasForeignKey(aa => aa.AssetId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            // Asset has many Maintenance Logs
+            //entity.HasMany(a => a.MaintenanceLogs)
+            //      .WithOne(m => m.Asset)
+            //      .HasForeignKey(m => m.AssetId)
+            //      .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

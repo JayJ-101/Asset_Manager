@@ -7,13 +7,13 @@ namespace Asset_Manager.Controllers
     public class AssetController : Controller
     {
         private Repository<Asset> assetData { get; set; }
-        private Repository<Branch> branchData { get; set; }  
+        private Repository<Supplier> supplierData { get; set; }
         private Repository<Category> categoryData { get; set; }
 
         public AssetController(AssetDbContext ctx)
         {
             assetData = new Repository<Asset>(ctx);
-            branchData  = new Repository<Branch> (ctx);
+            supplierData = new Repository<Supplier>(ctx);
             categoryData = new Repository<Category> (ctx);
         }
 
@@ -21,7 +21,7 @@ namespace Asset_Manager.Controllers
         {
             var options = new QueryOptions<Asset>
             {
-                Includes = "Category,Branch",
+                Includes = "Category,Supplier",
                 OrderByDirection = values.SortDirection,
                 PageNumber = values.PageNumber,
                 PageSize = values.PageSize,
@@ -43,11 +43,7 @@ namespace Asset_Manager.Controllers
                 options.Where = a => a.CategoryId == values.CategoryId;
             }
 
-            if (values.BranchId.HasValue)
-            {
-                options.Where = a => a.BranchId == values.BranchId;
-            }
-
+           
             if (!string.IsNullOrEmpty(values.Status))
             {
                 options.Where = a => a.Status == values.Status;
@@ -62,10 +58,7 @@ namespace Asset_Manager.Controllers
                 {
                     OrderBy = c => c.CategoryName
                 }),
-                Branches = branchData.List(new QueryOptions<Branch>
-                {
-                    OrderBy = b => b.BranchName
-                }),
+                
                 Statuses = new List<string> { "Available", "In Use", "Under Maintenance", "Retired" }
             };
         
@@ -107,10 +100,10 @@ namespace Asset_Manager.Controllers
                 if (!validate.IsValid)
                 {
                     ModelState.AddModelError(nameof(vm.Asset.SerialNumber), validate.ErrorMessage);
-                    Console.WriteLine($"Validation Error: {validate.ErrorMessage}");
+                    
                 }
             }
-
+            Console.WriteLine($"Validation Error: {validate.ErrorMessage}");
             if (ModelState.IsValid)
             {
                 assetData.Insert(vm.Asset);
@@ -148,7 +141,7 @@ namespace Asset_Manager.Controllers
               
                 var asset = GetAsset(vm.Asset.AssetId);
                 asset.Status = vm.Asset.Status;
-                asset.Branch = vm.Asset.Branch;
+                
 
                 // don't need to call assetData.Update() - DB context is tracking   
                 assetData.Save();
@@ -194,7 +187,7 @@ namespace Asset_Manager.Controllers
             var options = new QueryOptions<Asset>
             {
                 Where = a => a.AssetId == id,
-                Includes = "Category,Branch"
+                Includes = "Category,Supplier"
             };
             return assetData.Get(options) ?? new Asset();
         }
@@ -205,11 +198,11 @@ namespace Asset_Manager.Controllers
             {
                 OrderBy = c => c.CategoryName
             });
-            
-            vm.Branchs = branchData.List(new QueryOptions<Branch>
+            vm.Suppliers = supplierData.List(new QueryOptions<Supplier>
             {
-                OrderBy = s => s.BranchName
+                OrderBy = c => c.SupplierName
             });
+
         }
         #endregion
     }

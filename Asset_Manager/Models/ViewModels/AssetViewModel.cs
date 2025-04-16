@@ -5,6 +5,7 @@
         public Asset Asset { get; set;} =new Asset();
 
         public IEnumerable<Category> Categories { get; set;} = new List<Category>();  
-        public IEnumerable<Branch> Branchs { get; set;}= new List<Branch>();
+        public IEnumerable<Supplier> Suppliers { get; set;} = new List<Supplier>();
+
     }
 }

@@ -40,8 +40,6 @@
             <label asp-for="Asset.SerialNumber" class="col-form-label col-md-2">Serial Number:</label>
             <div class="col-md-4">
                 <input type="text" asp-for="Asset.SerialNumber" class="form-control" />
-            </div>
-            <div class="col">
                 <span asp-validation-for="Asset.SerialNumber" class="text-danger"></span>
             </div>
         </div>
@@ -59,16 +57,18 @@
         </div>
 
         <div class="row mb-2">
-            <label class="col-form-label col-md-2">Branch:</label>
+            <label class="col-form-label col-md-2">Supplier  :</label>
             <div class="col-md-4">
-                <select asp-for="Asset.BranchId" class="form-select"
-                        asp-items='@new SelectList(Model.Branchs, "BranchId", "BranchName", Model.Asset.BranchId)'>
+                <select asp-for="Asset.SupplierId" class="form-select"
+                        asp-items='@new SelectList(Model.Suppliers, "SupplierId", "SupplierName", Model.Asset.SupplierId)'>
                 </select>
             </div>
             <div class="col">
-                <span asp-validation-for="Asset.BranchId" class="text-danger"></span>
+                <span asp-validation-for="Asset.SupplierId" class="text-danger"></span>
             </div>
         </div>
+
+        
         <div class="row mb-2">
             <label class="col-form-label col-md-2">Status:</label>
             <div class="col-md-4">

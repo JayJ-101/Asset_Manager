@@ -4,6 +4,7 @@ using Asset_Manager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Asset_Manager.Migrations
 {
     [DbContext(typeof(AssetDbContext))]
-    partial class AssetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414111435_Updated")]
+    partial class Updated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace Asset_Manager.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("BranchId")
+                    b.Property<int>("BranchId")
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
@@ -49,9 +52,6 @@ namespace Asset_Manager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("WarrantyExpiryDate")
                         .HasColumnType("datetime2");
 
@@ -60,8 +60,6 @@ namespace Asset_Manager.Migrations
                     b.HasIndex("BranchId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("SupplierId");
 
                     b.ToTable("Assets");
                 });
@@ -205,9 +203,11 @@ namespace Asset_Manager.Migrations
 
             modelBuilder.Entity("Asset_Manager.Models.Asset", b =>
                 {
-                    b.HasOne("Asset_Manager.Models.Branch", null)
+                    b.HasOne("Asset_Manager.Models.Branch", "Branch")
                         .WithMany("Assets")
-                        .HasForeignKey("BranchId");
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Asset_Manager.Models.Category", "Category")
                         .WithMany("Assets")
@@ -215,15 +215,9 @@ namespace Asset_Manager.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Asset_Manager.Models.Supplier", "Supplier")
-                        .WithMany("Assets")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Branch");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Asset_Manager.Models.AssetAssignment", b =>
@@ -256,11 +250,6 @@ namespace Asset_Manager.Migrations
                 });
 
             modelBuilder.Entity("Asset_Manager.Models.Category", b =>
-                {
-                    b.Navigation("Assets");
-                });
-
-            modelBuilder.Entity("Asset_Manager.Models.Supplier", b =>
                 {
                     b.Navigation("Assets");
                 });
