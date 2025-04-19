@@ -52,26 +52,32 @@
                                asp-action="Index" asp-controller="Asset" asp-area="">
                                 <span class="fas fa-book-open"></span>&nbsp;Assets
                             </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link @Nav.Active("Supplier", current)"
-                           asp-action="Index" asp-controller="Supplier" asp-area="">
-                            <span class="fas fa-book-open"></span>&nbsp;Supplier
-                        </a>
-                    </li>
-                        <li class="nav-item">
-                            <a class="nav-link @Nav.Active("Category", current)"
-                               asp-action="Index" asp-controller="Category" asp-area="">
-                                <span class="fas fa-feather-alt"></span>&nbsp;Category
+                        </li>
+                        <li>
+                            <a class="nav-link @Nav.Active("AssetAssignment", current)"
+                               asp-action="Index" asp-controller="AssetAssignment" asp-area="">
+                                <span class="fas fa-book-open"></span>&nbsp;Asset Assigment
                             </a>
                         </li>
-                    <li class="nav-item">
-                        <a class="nav-link @Nav.Active("Branch", current)"
-                           asp-action="Index" asp-controller="Branch" asp-area="">
-                            <span class="fas fa-feather-alt"></span>&nbsp;Branch
-                        </a>
-                    </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link @Nav.Active("Supplier", current)"
+                               asp-action="Index" asp-controller="Supplier" asp-area="">
+                                <span class="fas fa-book-open"></span>&nbsp;Supplier
+                            </a>
+                        </li>
+                         <li class="nav-item">
+                                <a class="nav-link @Nav.Active("Category", current)"
+                                   asp-action="Index" asp-controller="Category" asp-area="">
+                                    <span class="fas fa-feather-alt"></span>&nbsp;Category
+                                </a>
+                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Nav.Active("Branch", current)"
+                               asp-action="Index" asp-controller="Branch" asp-area="">
+                                <span class="fas fa-feather-alt"></span>&nbsp;Branch
+                            </a>
+                        </li>
                     </ul>
             </div>
         </nav>
