@@ -18,7 +18,7 @@ namespace Asset_Manager.Models
         [ValidateNever]
         public Branch Branch { get; set; } = null!;
 
-        public DateTime AssginedDate { get; set; }
+        public DateTime AssginedDate { get; set; }= DateTime.Now;
         public DateTime? ReturnDate { get; set; }
 
 

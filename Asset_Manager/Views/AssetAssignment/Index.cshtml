@@ -108,10 +108,10 @@
         @foreach(AssetAssignment assignment in Model.Assign)
         {
             <tr>
-                <td>@assignment.AssetId</td>
+                <td>@assignment.Asset?.AssetName</td>
                 <td>@assignment.Employee</td>
                 <td>@assignment.Branch?.BranchName</td>
-                <td>@assignment.AssginedDate.ToShortTimeString()</td>
+                <td>@assignment.AssginedDate.ToShortDateString()</td>
                 <td>@assignment.ReturnDate</td>
 
             </tr>

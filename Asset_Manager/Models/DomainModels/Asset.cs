@@ -9,6 +9,14 @@ namespace Asset_Manager.Models
         [Key]
         public int AssetId { get; set; }
 
+        [Required(ErrorMessage = "Manufacturer is required.")]
+        [StringLength(30)]
+        public string  Manufacturer { get; set; } =string.Empty;
+
+        [Required(ErrorMessage = "Model name is required.")]
+        [StringLength(30)]
+        public string Model { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Name Required")]
         [StringLength(20)]
         public string AssetName { get; set; } =string.Empty;
@@ -34,8 +42,5 @@ namespace Asset_Manager.Models
         public DateTime WarrantyExpiryDate { get; set; } = DateTime.Now.AddYears(2);
 
         public ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
-
-
-
     }
 }

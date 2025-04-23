@@ -9,12 +9,14 @@ public class AssetAssignmentController : Controller
 {
     private Repository<AssetAssignment> assignData { get; set; }
     private Repository<Branch> branchData { get; set; }
+    private Repository<Asset> assetData { get; set; }
 
 
     public AssetAssignmentController(AssetDbContext ctx)
     {
         assignData = new Repository<AssetAssignment>(ctx);
         branchData = new Repository<Branch>(ctx);
+        assetData = new Repository<Asset>(ctx);
 
     }
 
@@ -22,7 +24,7 @@ public class AssetAssignmentController : Controller
     {
         var options = new QueryOptions<AssetAssignment>
         {
-            Includes = "Branch",
+            Includes = "Branch,Asset",
             OrderByDirection = values.SortDirection,
             PageNumber = values.PageNumber,
             PageSize = values.PageSize, 
@@ -110,6 +112,10 @@ public class AssetAssignmentController : Controller
         vm.Branches = branchData.List(new QueryOptions<Branch>
         {
             OrderBy = b => b.BranchName,
+        });
+        vm.Assets = assetData.List(new QueryOptions<Asset>
+        {
+            OrderBy = b => b.AssetName,
         });
     }
 }

@@ -25,6 +25,52 @@
     else
     {
 
+        <div class="row mb-2">
+            <label asp-for="Asset.Manufacturer" class="col-form-label col-md-2">Manufacturer:</label>
+            <div class="col-md-4">
+                <input type="text" asp-for="Asset.Manufacturer" class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="Asset.Manufacturer" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label asp-for="Asset.Model" class="col-form-label col-md-2">Model:</label>
+            <div class="col-md-4">
+                <input type="text" asp-for="Asset.Model" class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="Asset.Model" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label class="col-form-label col-md-2">Category:</label>
+            <div class="col-md-4">
+                <select asp-for="Asset.CategoryId" class="form-select"
+                        asp-items='@new SelectList(Model.Categories, "CategoryId", "CategoryName", Model.Asset.CategoryId)'>
+                </select>
+            </div>
+            <div class="col">
+                <span asp-validation-for="Asset.CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <label class="col-form-label col-md-2">Branch: </label>
+            <div class="col-md-4">
+                <select asp-for="BranchId" class="form-control"
+                        asp-items="@(new SelectList(Model.Branches, "BranchId", "BranchName"))">
+                    <option value="">-- Select Branch --</option>
+                </select>
+               
+            </div>
+            <div class="col">
+                <span asp-validation-for="BranchId" class="text-danger"></span>
+            </div>
+        </div>
+
+        
+
 
         <div class="row mb-2">
             <label asp-for="Asset.AssetName" class="col-form-label col-md-2">Asset Name:</label>
@@ -37,22 +83,22 @@
         </div>
 
         <div class="row mb-2">
-            <label asp-for="Asset.SerialNumber" class="col-form-label col-md-2">Serial Number:</label>
+            <label asp-for="Employee" class="col-form-label col-md-2"></label>
             <div class="col-md-4">
-                <input type="text" asp-for="Asset.SerialNumber" class="form-control" />
-                <span asp-validation-for="Asset.SerialNumber" class="text-danger"></span>
+                <input asp-for="Employee" class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="Employee" class="text-danger"></span>
             </div>
         </div>
 
         <div class="row mb-2">
-            <label class="col-form-label col-md-2">Category:</label>
+            <label asp-for="Asset.SerialNumber" class="col-form-label col-md-2">Serial Number:</label>
             <div class="col-md-4">
-                <select asp-for="Asset.CategoryId" class="form-select"
-                        asp-items='@new SelectList(Model.Categories, "CategoryId", "CategoryName", Model.Asset.CategoryId)'>
-                </select>
+                <input type="text" asp-for="Asset.SerialNumber" class="form-control" />
             </div>
             <div class="col">
-                <span asp-validation-for="Asset.CategoryId" class="text-danger"></span>
+                <span asp-validation-for="Asset.SerialNumber" class="text-danger"></span>
             </div>
         </div>
 
@@ -104,3 +150,9 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

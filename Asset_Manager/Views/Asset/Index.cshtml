@@ -61,6 +61,22 @@
         <tr>
             <th>
                 @{
+                    routes.SetSortAndDirection(nameof(Asset.Manufacturer), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Manufacturer</a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(Asset.Model), current);
+                }
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="text-white text-decoration-none">Model</a>
+            </th>
+            <th>
+                @{
                     routes.SetSortAndDirection(nameof(Asset.AssetName), current);
                 }
                 <a asp-action="Index"
@@ -122,12 +138,13 @@
         @foreach (Asset asset in Model.Assets)
         {
             <tr>
+                <td>@asset.Manufacturer</td>
+                <td>@asset.Model</td>
                 <td>@asset.AssetName</td>
                 <td>@asset.SerialNumber</td>
+                <td>@asset.Supplier.SupplierName</td>
                 <td>@asset.Category?.CategoryName</td>
-               
                 <td>@asset.Status</td>
-                
                 <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Edit</a>
