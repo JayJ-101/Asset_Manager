@@ -8,7 +8,7 @@ namespace Asset_Manager.Models
         private const string BranchKey = "validBranch";
         private const string SupplierKey = "validSupplier";
         private const string AssetKey = "validAsset";
-        private const string OrderKey = "validOrder";
+      
 
 
 

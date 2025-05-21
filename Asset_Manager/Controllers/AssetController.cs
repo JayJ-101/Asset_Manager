@@ -40,7 +40,7 @@ namespace Asset_Manager.Controllers
 
             if (!string.IsNullOrEmpty(values.SearchQuery))
             {
-                options.Where = a =>a.AssetName.Contains(values.SearchQuery) ||
+                options.Where = a =>a.AssetName.Contains(values.SearchQuery) || a.Model.Contains(values.SearchQuery) ||
                     a.SerialNumber.Contains(values.SearchQuery); 
             }
 
@@ -98,24 +98,20 @@ namespace Asset_Manager.Controllers
         [HttpPost]
         public IActionResult Add(AssetViewModel vm, string operation)
         {
-            // Server-side version of remote validation
             var validate = new Validate(TempData);
-            if (!validate.IsAssetChecked)
+
+            // Always validate on post
+            validate.CheckAsset(vm.Asset.SerialNumber, operation, assetData);
+            if (!validate.IsValid)
             {
-                validate.CheckAsset(vm.Asset.SerialNumber, operation, assetData);
-                if (!validate.IsValid)
-                {
-                    ModelState.AddModelError(nameof(vm.Asset.SerialNumber), validate.ErrorMessage);
-                    
-                }
+                ModelState.AddModelError(nameof(vm.Asset.SerialNumber), validate.ErrorMessage);
             }
-          
+
             if (ModelState.IsValid)
             {
                 assetData.Insert(vm.Asset);
                 assetData.Save();
 
-                // Immediately assign the asset
                 var assignment = new AssetAssignment
                 {
                     AssetId = vm.Asset.AssetId,
@@ -126,17 +122,16 @@ namespace Asset_Manager.Controllers
                 assignmentData.Insert(assignment);
                 assignmentData.Save();
 
-                validate.ClearAsset();
                 TempData["message"] = $"{vm.Asset.AssetName} added to Assets";
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
             else
             {
-                // Repopulate dropdown data if the model state is invalid
                 LoadViewData(vm);
-                return View("Asset", vm); // Return the view with validation errors
+                return View("Asset", vm);
             }
         }
+
         #endregion
 
         #region Edit
