@@ -129,7 +129,7 @@
                    class="text-white text-decoration-none">Warranty Date</a>
             </th>
             <th>
-
+f
             </th>
         </tr>
     </thead>
@@ -147,6 +147,10 @@
                 <td>@asset.Status</td>
                 <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
                 <td>
+                    <a asp-controller="AssetAssignment" asp-action="Add" 
+                        asp-route-assetId="@asset.AssetId"
+                        class="btn btn-sm btn-warning">Assign</a>
+                    <a asp-action="Details" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Details</a>
                     <a asp-action="Edit" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Edit</a>
                     <a asp-action="Delete" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Delete</a>
                 </td>

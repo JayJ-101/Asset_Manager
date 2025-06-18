@@ -1,0 +1,46 @@
+﻿@model Asset
+
+@{
+    ViewData["Title"] = "Asset Details";
+}
+
+<h2>@Model.AssetName</h2>
+
+<div class="mb-4">
+    <p><strong>Category:</strong> @Model.Category?.CategoryName</p>
+    <p><strong>Serial Number:</strong> @Model.SerialNumber</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Supplier:</strong> @Model.Supplier?.SupplierName</p>
+    <p><strong>Warranty Expiry:</strong> @Model.WarrantyExpiryDate.ToShortDateString()</p>
+</div>
+
+<hr />
+
+<h4>Assignment History</h4>
+
+@if (Model.AssetAssignments != null && Model.AssetAssignments.Any())
+{
+    <table class="table table-sm table-bordered">
+        <thead class="table-dark text-white">
+            <tr>
+                
+                <th>Assigned Date</th>
+                <th>Return Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model.AssetAssignments.OrderByDescending(a => a.AssginedDate))
+            {
+                <tr>
+                    
+                    <td>@assignment.AssginedDate.ToShortDateString()</td>
+                    <td>@(assignment.ReturnDate?.ToShortDateString() ?? "Still Assigned")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>This asset has no assignment history yet.</p>
+}

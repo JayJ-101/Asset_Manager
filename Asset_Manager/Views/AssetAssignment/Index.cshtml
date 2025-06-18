@@ -1,134 +1,118 @@
 ﻿@model AssignListViewModel
 @{
     ViewData["Title"] = "Manage Asset Assignment";
-
     AssignGridData current = Model.CurrentRoute;
-    GridData routes = Model.CurrentRoute.Clone(); 
+    GridData routes = Model.CurrentRoute.Clone();
 }
-
 
 <h6 class="mt-1"><a asp-action="Add">Assign Asset</a></h6>
 
 <form asp-action="Index" method="get" class="mb-4">
     <div class="row">
-        <!-- Search Bar -->
         <div class="col-md-3">
-            <label for="SearchQuery" class="form-label">Search Asset</label>
+            <label for="SearchQuery" class="form-label">Search by Employee</label>
             <input type="text" id="SearchQuery" name="SearchQuery"
-                   value="@Model.CurrentRoute.SearchQuery" class="form-control"
-                   placeholder="Enter supplier name or contact">
+                   value="@current.SearchQuery" class="form-control"
+                   placeholder="Enter employee name">
         </div>
 
-        <!-- Branch Dropdown -->
         <div class="col-md-2">
             <label for="BranchId" class="form-label">Branch</label>
-            <select id="BranchId" name="BrachId" class="form-select">
+            <select id="BranchId" name="BranchId" class="form-select">
                 <option value="">All</option>
                 @foreach (var branch in Model.Branches)
                 {
-                    <option value="@branch.BranchId" selected="@(branch.BranchId == Model.CurrentRoute.BranchId)">
+                    <option value="@branch.BranchId" selected="@(branch.BranchId == current.BranchId)">
                         @branch.BranchName
                     </option>
                 }
             </select>
         </div>
 
-
-        <!-- Status Dropdown -->
-   @*      <div class="col-md-2">
-            <label for="Status" class="form-label">Status</label>
-            <select id="Status" name="Status" class="form-select">
-                <option value="">All</option>
-                @foreach (var status in Model.Statuses)
-                {
-                    <option value="@status" selected="@(status == Model.CurrentRoute.Status)">
-                        @status
-                    </option>
-                }
-            </select>
-        </div> *@
-
-        <!-- Submit Button -->
         <div class="col-md-2 align-self-end">
             <button type="submit" class="btn btn-primary mt-2">Apply</button>
         </div>
-
     </div>
-</form> 
+</form>
 
 <table class="table table-bordered table-striped table-sm">
     <thead class="table-dark text-white">
         <tr>
             <th>
                 @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.AssetId), current);  
+                    routes.SetSortAndDirection(nameof(AssetAssignment.AssetId), current);
                 }
-                <a asp-action="Index"
-                    asp-all-route-data="@routes.ToDictionary()"
-                    class="text-white text-decoration-none">Asset Name</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Asset Name
+                </a>
             </th>
             <th>
                 @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.Employee),current);
+                    routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current);
                 }
-                <a asp-action="Index"
-                    asp-all-route-data="@routes.ToDictionary()"
-                    class="text-white text-decoration-none">Employee</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Employee
+                </a>
             </th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Branch</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Branch
+                </a>
             </th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Assgined Date</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Assigned Date
+                </a>
             </th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Return Date</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Return Date
+                </a>
             </th>
-            <th>
-
-            </th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach(AssetAssignment assignment in Model.Assign)
+        @foreach (var assignment in Model.Assign)
         {
             <tr>
                 <td>@assignment.Asset?.AssetName</td>
                 <td>@assignment.Employee</td>
                 <td>@assignment.Branch?.BranchName</td>
                 <td>@assignment.AssginedDate.ToShortDateString()</td>
-                <td>@assignment.ReturnDate</td>
-
+                <td>
+                    @(assignment.ReturnDate.HasValue
+                        ? assignment.ReturnDate.Value.ToShortDateString()
+                        : "Not Returned")
+                </td>
+                <td>
+                    <form asp-action="Select" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@assignment.AssingmentId" />
+                        <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId"
+                           class="btn btn-sm btn-warning">Return</a>
+                        <button type="submit" name="operation" value="edit" class="btn btn-sm btn-warning">Edit</button>
+                        <button type="submit" name="operation" value="delete" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
-
-
-<!-- Paging Links -->
-@{
-    routes = current.Clone();
-    for (int i = 1; i <= Model.TotalPages; i++)
+<div>
+    @for (int i = 1; i <= Model.TotalPages; i++)
     {
         routes.PageNumber = i;
-        string active = @Nav.Active(i, current.PageNumber);
-        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()"
-           class="btn btn-outline-primary mb-2 @active">@i</a>
+        string active = Nav.Active(i, current.PageNumber);
+        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
     }
-}
+</div>

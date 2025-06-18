@@ -1,41 +1,55 @@
 ﻿@model AssignmentViewModel
+
 @{
     var action = ViewContext.RouteData.Values["action"]!.ToString()!.Capitalize();
-    ViewData["Title"] = $" | {action} asset";
+    ViewData["Title"] = $" | {action} Asset Assignment";
 }
 
-<h1>@action Asset</h1>
+<h1>@action Asset Assignment</h1>
 
-<form asp-action="@action" asp-area="" method="post">
+<form asp-action="@action" method="post">
     <input type="hidden" asp-for="AssetAssignment.AssingmentId" />
     <input type="hidden" name="Operation" value="@action" />
 
-    @if(action.EqualsNoCase("delete"))
+    @if (action.EqualsNoCase("delete"))
     {
-      
+        <h5>Are you sure you want to delete this assignment?</h5>
+        <p><strong>Asset:</strong> @Model.AssetAssignment.Asset?.AssetName</p>
+        <p><strong>Assigned To:</strong> @Model.AssetAssignment.Employee</p>
+        <p><strong>Branch:</strong> @Model.AssetAssignment.Branch?.BranchName</p>
     }
     else
     {
         <div class="row mb-2">
             <label class="col-form-label col-md-2">Asset:</label>
             <div class="col-md-4">
-                <select asp-for="AssetAssignment.AssetId" class="form-select"
-                        asp-items='@new SelectList(Model.Assets, "AssetId", "AssetName", Model.AssetAssignment.AssetId)'>
-                </select>
+                @if (Model.AssetAssignment.AssetId != 0)
+                {
+                    var selectedAsset = Model.Assets.FirstOrDefault(a => a.AssetId == Model.AssetAssignment.AssetId);
+                    <input type="text" class="form-control" value="@selectedAsset?.AssetName" disabled />
+                    <input type="hidden" asp-for="AssetAssignment.AssetId" />
+                }
+                else
+                {
+                    <div class="row mb-2">
+                        <label class="col-form-label col-md-2">Asset:</label>
+                        <div class="col-md-4">
+                            <select asp-for="AssetAssignment.AssetId" class="form-select"
+                                    asp-items='@new SelectList(Model.Assets, "AssetId", "AssetName")'>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <span asp-validation-for="AssetAssignment.AssetId" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
+
+
             </div>
             <div class="col">
                 <span asp-validation-for="AssetAssignment.AssetId" class="text-danger"></span>
             </div>
         </div>
-
-        <div class="row mb-2">
-            <label asp-for="AssetAssignment.Employee" class="col-form-label col-md-2">Employee:</label>
-            <div class="col-md-4">
-                <input type="text" asp-for="AssetAssignment.Employee" class="form-control" />
-                <span asp-validation-for="AssetAssignment.Employee" class="text-danger"></span>
-            </div>
-        </div>
-
         <div class="row mb-2">
             <label class="col-form-label col-md-2">Branch:</label>
             <div class="col-md-4">
@@ -49,26 +63,46 @@
         </div>
 
         <div class="row mb-2">
-            <label class="col-form-label col-md-2">Assigned Date:</label>
+            <label asp-for="AssetAssignment.Employee" class="col-form-label col-md-2">Employee:</label>
+            <div class="col-md-4">
+                <input type="text" asp-for="AssetAssignment.Employee" class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="AssetAssignment.Employee" class="text-danger"></span>
+            </div>
+        </div>
+
+        
+
+        <div class="row mb-2">
+            <label asp-for="AssetAssignment.AssginedDate" class="col-form-label col-md-2">Assigned Date:</label>
             <div class="col-md-4">
                 <input type="date" asp-for="AssetAssignment.AssginedDate" class="form-control" />
             </div>
-        </div>
-        @if (action.EqualsNoCase("edit"))
-        {
-            <div class="row mb-2">
-                <label class="col-form-label col-md-2">Assigned Date:</label>
-                <div class="col-md-4">
-                    <input type="date" asp-for="AssetAssignment.ReturnDate" class="form-control" />
-                </div>
+            <div class="col">
+                <span asp-validation-for="AssetAssignment.AssginedDate" class="text-danger"></span>
             </div>
-        }
+        </div>
 
+        <div class="row mb-2">
+            <label asp-for="AssetAssignment.ReturnDate" class="col-form-label col-md-2">Return Date:</label>
+            <div class="col-md-4">
+                <input type="date" asp-for="AssetAssignment.ReturnDate" class="form-control" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="AssetAssignment.ReturnDate" class="text-danger"></span>
+            </div>
+        </div>
     }
+
     <div class="row">
         <div class="@(action.EqualsNoCase("delete") ? "mt-2" : "offset-md-2")">
             <button type="submit" class="btn btn-primary">@action</button>
-            <a asp-action="Index" class="btn btn-primary">Cancel</a>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
         </div>
     </div>
 </form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

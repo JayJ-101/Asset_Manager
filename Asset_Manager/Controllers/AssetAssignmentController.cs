@@ -3,21 +3,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Asset_Manager.Models;
 using System.Linq;
-using System.Threading.Tasks;
 
 public class AssetAssignmentController : Controller
 {
-    private Repository<AssetAssignment> assignData { get; set; }
-    private Repository<Branch> branchData { get; set; }
-    private Repository<Asset> assetData { get; set; }
-
+    private Repository<AssetAssignment> assignData { get; }
+    private Repository<Branch> branchData { get; }
+    private Repository<Asset> assetData { get; }
 
     public AssetAssignmentController(AssetDbContext ctx)
     {
         assignData = new Repository<AssetAssignment>(ctx);
         branchData = new Repository<Branch>(ctx);
         assetData = new Repository<Asset>(ctx);
-
     }
 
     public IActionResult Index(AssignGridData values)
@@ -27,15 +24,13 @@ public class AssetAssignmentController : Controller
             Includes = "Branch,Asset",
             OrderByDirection = values.SortDirection,
             PageNumber = values.PageNumber,
-            PageSize = values.PageSize, 
+            PageSize = values.PageSize,
         };
-
-
+    
         if (values.IsSortByBranch)
         {
             options.OrderBy = a => a.BranchId;
         }
-
 
         if (!string.IsNullOrEmpty(values.SearchQuery))
         {
@@ -47,14 +42,13 @@ public class AssetAssignmentController : Controller
             Assign = assignData.List(options),
             CurrentRoute = values,
             TotalPages = values.GetTotalPages(assignData.Count),
-            Branches = branchData.List(new QueryOptions<Branch>
-            {
-                OrderBy = a => a.BranchName,  
-            }),
+            Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName }),
         };
+
         return View(vm);
     }
 
+    
     // select (posted from genre drop down on Index page). 
     [HttpPost]
     public RedirectToActionResult Select(int id, string operation)
@@ -71,51 +65,190 @@ public class AssetAssignmentController : Controller
     }
 
     [HttpGet]
-    public ViewResult Add()
+    [HttpGet]
+    public IActionResult Add(int? assetId)
     {
         var vm = new AssignmentViewModel();
+
+        if (assetId.HasValue)
+        {
+            vm.AssetAssignment.AssetId = assetId.Value;
+        }
+
+        LoadViewData(vm);
+        return View("AssetAssignment", vm);
+    }
+
+    //public IActionResult Add()
+    //{
+    //    var vm = new AssignmentViewModel();
+    //    LoadViewData(vm);
+    //    return View("AssetAssignment", vm);
+    //}
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Add(AssignmentViewModel vm)
+    {
+        if (!ModelState.IsValid)
+        {
+            LoadViewData(vm);
+            return View("AssetAssignment", vm);
+        }
+
+        assignData.Insert(vm.AssetAssignment);
+
+        // Update asset status to "Assigned"
+        var asset = assetData.Get(vm.AssetAssignment.AssetId);
+        if (asset != null)
+        {
+            asset.Status = "Assigned";
+            assetData.Update(asset);
+        }
+
+        assignData.Save();
+        assetData.Save();
+
+        TempData["message"] = $"Asset assigned to {vm.AssetAssignment.Employee}.";
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var assignment = assignData.Get(new QueryOptions<AssetAssignment>
+        {
+            Includes = "Asset,Branch",
+            Where = a => a.AssingmentId == id
+        });
+
+        if (assignment == null) return NotFound();
+
+        var vm = new AssignmentViewModel
+        {
+            AssetAssignment = assignment
+        };
+
         LoadViewData(vm);
         return View("AssetAssignment", vm);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Add(AssignmentViewModel vm)
+    public IActionResult Edit(AssignmentViewModel vm)
     {
-        //var validate = new Validate(TempData);
-        //if (!validate.IsAssetNameChecked)
-        //{
-        //    validate.CheckedAssetName(vm.AssetAssignment.AssetName, operation, assignData);
-        //    if (!validate.IsValid)
-        //    {
-        //        ModelState.AddModelError(nameof(vm.AssetAssignment.AssetName) validate.ErrorMessage);
-        //    }
-        //}
-
-        if (ModelState.IsValid) {
-            assignData.Insert(vm.AssetAssignment);
-            assignData.Save();
-            //validate.ClearAssign();
-            //TempData["message"] = $"{vm.AssetAssignment.} added to";
-            return RedirectToAction("Index");
-
-        }
-        else
+        if (!ModelState.IsValid)
         {
             LoadViewData(vm);
-            return View("AssignAsset", vm);
+            return View("AssetAssignment", vm);
         }
+
+        // Update asset status if returned
+        var asset = assetData.Get(vm.AssetAssignment.AssetId);
+        if (asset != null)
+        {
+            asset.Status = vm.AssetAssignment.ReturnDate.HasValue ? "Available" : "Assigned";
+            assetData.Update(asset);
+        }
+
+        assignData.Update(vm.AssetAssignment);
+        assignData.Save();
+        assetData.Save();
+
+        TempData["message"] = $"Assignment updated for {vm.AssetAssignment.Employee}.";
+        return RedirectToAction("Index");
+    }
+
+    // GET: Return confirmation page
+    [HttpGet]
+    public IActionResult ReturnAsset(int id)
+    {
+        var assignment = assignData.Get(new QueryOptions<AssetAssignment>
+        {
+            Where = a => a.AssingmentId == id,
+            Includes = "Asset,Branch"
+        });
+
+        if (assignment == null)
+            return NotFound();
+
+        return View(assignment);
+    }
+
+    // POST: Process return
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult ReturnAssetConfirmed(int id)
+    {
+        var assignment = assignData.Get(id);
+        if (assignment == null) return NotFound();
+
+        assignment.ReturnDate = DateTime.Now;
+        assignData.Update(assignment);
+        assignData.Save();
+
+        var asset = assetData.Get(assignment.AssetId);
+        if (asset != null)
+        {
+            asset.Status = "Available";
+            assetData.Update(asset);
+            assetData.Save();
+        }
+
+        TempData["message"] = "Asset successfully returned.";
+        return RedirectToAction("Index");
+    }
+
+
+    [HttpGet]
+    public IActionResult Delete(int id)
+    {
+        var assignment = assignData.Get(id);
+        if (assignment == null) return NotFound();
+
+        return View(assignment);
+    }
+
+    [HttpPost]
+    [ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        var assignment = assignData.Get(id);
+        if (assignment == null) return NotFound();
+
+        // Optionally reset status
+        var asset = assetData.Get(assignment.AssetId);
+        if (asset != null)
+        {
+            asset.Status = "Available";
+            assetData.Update(asset);
+        }
+
+        assignData.Delete(assignment);
+        assignData.Save();
+        assetData.Save();
+
+        TempData["message"] = "Assignment deleted.";
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult Details(int id)
+    {
+        var asset = assetData.Get(new QueryOptions<Asset>
+        {
+            Where = a => a.AssetId == id,
+            Includes = "Category,Supplier,AssetAssignments.Branch"
+        });
+
+        if (asset == null) return NotFound();
+
+        return View(asset);
     }
 
     private void LoadViewData(AssignmentViewModel vm)
     {
-        vm.Branches = branchData.List(new QueryOptions<Branch>
-        {
-            OrderBy = b => b.BranchName,
-        });
-        vm.Assets = assetData.List(new QueryOptions<Asset>
-        {
-            OrderBy = b => b.AssetName,
-        });
+        vm.Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName });
+        vm.Assets = assetData.List(new QueryOptions<Asset> { OrderBy = a => a.AssetName });
     }
 }

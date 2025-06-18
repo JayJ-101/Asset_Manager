@@ -1,0 +1,39 @@
+﻿@model AssetAssignment
+@{
+    ViewData["Title"] = "Return Asset";
+}
+
+<h2>Return Asset</h2>
+
+<div class="alert alert-warning">
+    <strong>Are you sure you want to return this asset?</strong>
+</div>
+
+<form asp-action="ReturnAssetConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.AssingmentId" />
+
+    <dl class="row">
+        <dt class="col-sm-3">Asset Name:</dt>
+        <dd class="col-sm-9">@Model.Asset?.AssetName</dd>
+
+        <dt class="col-sm-3">Assigned To:</dt>
+        <dd class="col-sm-9">@Model.Employee</dd>
+
+        <dt class="col-sm-3">Branch:</dt>
+        <dd class="col-sm-9">@Model.Branch?.BranchName</dd>
+
+        <dt class="col-sm-3">Assigned Date:</dt>
+        <dd class="col-sm-9">@Model.AssginedDate.ToShortDateString()</dd>
+
+        @if (Model.ReturnDate.HasValue)
+        {
+            <dt class="col-sm-3">Already Returned:</dt>
+            <dd class="col-sm-9">@Model.ReturnDate.Value.ToShortDateString()</dd>
+        }
+    </dl>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-warning">Confirm Return</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

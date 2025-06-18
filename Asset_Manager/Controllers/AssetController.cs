@@ -9,8 +9,7 @@ namespace Asset_Manager.Controllers
         private Repository<Asset> assetData { get; set; }
         private Repository<Supplier> supplierData { get; set; }
         private Repository<Category> categoryData { get; set; }
-        private Repository<AssetAssignment> assignmentData { get; set; }
-        private Repository<Branch> branchData { get; set; }
+  
 
 
         public AssetController(AssetDbContext ctx)
@@ -18,8 +17,6 @@ namespace Asset_Manager.Controllers
             assetData = new Repository<Asset>(ctx);
             supplierData = new Repository<Supplier>(ctx);
             categoryData = new Repository<Category> (ctx);
-            assignmentData = new Repository<AssetAssignment>(ctx);
-            branchData = new Repository<Branch>(ctx);
 
         }
 
@@ -111,17 +108,6 @@ namespace Asset_Manager.Controllers
             {
                 assetData.Insert(vm.Asset);
                 assetData.Save();
-
-                var assignment = new AssetAssignment
-                {
-                    AssetId = vm.Asset.AssetId,
-                    Employee = vm.Employee,
-                    BranchId = vm.BranchId,
-                    AssginedDate = DateTime.Now,
-                };
-                assignmentData.Insert(assignment);
-                assignmentData.Save();
-
                 TempData["message"] = $"{vm.Asset.AssetName} added to Assets";
                 return RedirectToAction("Index");
             }
@@ -194,6 +180,19 @@ namespace Asset_Manager.Controllers
         #endregion Delete
 
 
+        public IActionResult Details(int id)
+        {
+            var asset = assetData.Get(new QueryOptions<Asset>
+            {
+                Where = a => a.AssetId == id,
+                Includes = "Category,Supplier"
+            });
+
+            if (asset == null) return NotFound();
+
+            return View(asset);
+        }
+
         #region Private Methods
         private Asset GetAsset(int id)
         {
@@ -215,10 +214,7 @@ namespace Asset_Manager.Controllers
             {
                 OrderBy = c => c.SupplierName
             });
-            vm.Branches = branchData.List(new QueryOptions<Branch>
-            {
-                OrderBy = b=> b.BranchName
-            });
+          
           
         }
         #endregion

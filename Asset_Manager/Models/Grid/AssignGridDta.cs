@@ -19,6 +19,8 @@ namespace Asset_Manager.Models
         public string SearchQuery { get; set; }
         // Filter Properties
         public int? BranchId { get; set; }
+
+        //public string Status { get; set; }
     }
 
 }
