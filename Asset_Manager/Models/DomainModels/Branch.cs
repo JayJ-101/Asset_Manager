@@ -13,5 +13,8 @@ namespace Asset_Manager.Models
         public string BranchName { get; set; } = string.Empty;
 
         public ICollection<Asset> Assets { get; set; } = new List<Asset>();
+        public ICollection<Department> Departments { get; set; } = new List<Department>();
+        public ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
+
     }
 }

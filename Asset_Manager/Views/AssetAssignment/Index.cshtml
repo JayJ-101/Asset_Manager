@@ -18,14 +18,26 @@
 
         <div class="col-md-2">
             <label for="BranchId" class="form-label">Branch</label>
-            <select id="BranchId" name="BranchId" class="form-select">
-                <option value="">All</option>
-                @foreach (var branch in Model.Branches)
+           <select id="BranchId" name="BranchId" class="form-select">
+           @foreach (var branch in Model.Branches)
+            {
+                var selected = branch.BranchId == Model.CurrentRoute.BranchId ? "selected" : "";
+                @:<option value="@branch.BranchId" @selected>@branch.BranchName</option>
+            }
+
+        </select>
+
+        </div>
+
+        <div class="col-md-2">
+            <label for="DepartmentId" class="form-label">Department</label>
+            <select id="DepartmentId" name="DepartmentId" class="form-select">
+               @foreach (var dept in Model.Departments)
                 {
-                    <option value="@branch.BranchId" selected="@(branch.BranchId == current.BranchId)">
-                        @branch.BranchName
-                    </option>
+                    var selected = dept.DepartmentId == Model.CurrentRoute.DepartmentId ? "selected" : "";
+                    @:<option value="@dept.DepartmentId" @selected>@dept.DepartmentName</option>
                 }
+
             </select>
         </div>
 
@@ -40,10 +52,10 @@
         <tr>
             <th>
                 @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.AssetId), current);
+                    routes.SetSortAndDirection(nameof(AssetAssignment.AssetTag), current);
                 }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Asset Name
+                    Asset Tag
                 </a>
             </th>
             <th>
@@ -62,6 +74,15 @@
                     Branch
                 </a>
             </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Department
+                </a>
+            </th>
+            
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current);
@@ -85,9 +106,10 @@
         @foreach (var assignment in Model.Assign)
         {
             <tr>
-                <td>@assignment.Asset?.AssetName</td>
+                <td>@assignment.AssetTag</td>
                 <td>@assignment.Employee</td>
                 <td>@assignment.Branch?.BranchName</td>
+                <td>@assignment.Department?.DepartmentName</td>
                 <td>@assignment.AssginedDate.ToShortDateString()</td>
                 <td>
                     @(assignment.ReturnDate.HasValue
@@ -116,3 +138,21 @@
         <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
     }
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#BranchId').change(function () {
+            var branchId = $(this).val();
+            $('#DepartmentId').html('<option>Loading...</option>');
+
+            $.get('/Department/GetByBranch', { branchId: branchId }, function (data) {
+                var options = '<option value="">All</option>';
+                $.each(data, function (i, dept) {
+                    options += `<option value="${dept.id}">${dept.name}</option>`;
+                });
+                $('#DepartmentId').html(options);
+            });
+        });
+    });
+</script>

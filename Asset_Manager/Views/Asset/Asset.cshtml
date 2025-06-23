@@ -46,9 +46,10 @@
         <div class="row mb-2">
             <label class="col-form-label col-md-2">Category:</label>
             <div class="col-md-4">
-                <select asp-for="Asset.CategoryId" class="form-select"
-                        asp-items='@new SelectList(Model.Categories, "CategoryId", "CategoryName", Model.Asset.CategoryId)'>
+                <select asp-for="Asset.CategoryId" class="form-select category-select"
+                        asp-items='@new SelectList(Model.Categories, "CategoryId", "CategoryName")'>
                 </select>
+
             </div>
             <div class="col">
                 <span asp-validation-for="Asset.CategoryId" class="text-danger"></span>
@@ -132,3 +133,12 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+<script>
+    $(document).ready(function () {
+        $('.category-select').select2({
+            placeholder: "Select a category",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>

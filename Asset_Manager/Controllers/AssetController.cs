@@ -185,7 +185,8 @@ namespace Asset_Manager.Controllers
             var asset = assetData.Get(new QueryOptions<Asset>
             {
                 Where = a => a.AssetId == id,
-                Includes = "Category,Supplier"
+                Includes = "Category,Supplier,AssetAssignments.Department,AssetAssignments.Branch"
+
             });
 
             if (asset == null) return NotFound();
@@ -193,13 +194,14 @@ namespace Asset_Manager.Controllers
             return View(asset);
         }
 
+
         #region Private Methods
         private Asset GetAsset(int id)
         {
             var options = new QueryOptions<Asset>
             {
                 Where = a => a.AssetId == id,
-                Includes = "Category,Supplier"
+                Includes = "Category,Supplier,AssetAssignments"
             };
             return assetData.Get(options) ?? new Asset();
         }

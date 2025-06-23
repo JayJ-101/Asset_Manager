@@ -15,26 +15,31 @@
 </div>
 
 <hr />
-
 <h4>Assignment History</h4>
 
 @if (Model.AssetAssignments != null && Model.AssetAssignments.Any())
 {
-    <table class="table table-sm table-bordered">
+    <table class="table table-bordered table-sm">
         <thead class="table-dark text-white">
             <tr>
-                
+                <th>User</th>
+                <th>Branch</th>
+                <th>Department</th>
                 <th>Assigned Date</th>
                 <th>Return Date</th>
+      
             </tr>
         </thead>
         <tbody>
             @foreach (var assignment in Model.AssetAssignments.OrderByDescending(a => a.AssginedDate))
             {
                 <tr>
-                    
+                    <td>@assignment.Employee</td>
+                    <td>@assignment.Branch?.BranchName</td>
+                    <td>@assignment.Department?.DepartmentName</td>
                     <td>@assignment.AssginedDate.ToShortDateString()</td>
                     <td>@(assignment.ReturnDate?.ToShortDateString() ?? "Still Assigned")</td>
+               
                 </tr>
             }
         </tbody>

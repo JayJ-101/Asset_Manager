@@ -8,12 +8,14 @@ public class AssetAssignmentController : Controller
 {
     private Repository<AssetAssignment> assignData { get; }
     private Repository<Branch> branchData { get; }
+    private Repository<Department> departmentData { get; }
     private Repository<Asset> assetData { get; }
 
     public AssetAssignmentController(AssetDbContext ctx)
     {
         assignData = new Repository<AssetAssignment>(ctx);
         branchData = new Repository<Branch>(ctx);
+        departmentData = new Repository<Department>(ctx);
         assetData = new Repository<Asset>(ctx);
     }
 
@@ -21,7 +23,7 @@ public class AssetAssignmentController : Controller
     {
         var options = new QueryOptions<AssetAssignment>
         {
-            Includes = "Branch,Asset",
+            Includes = "Branch,Asset,Department",
             OrderByDirection = values.SortDirection,
             PageNumber = values.PageNumber,
             PageSize = values.PageSize,
@@ -30,6 +32,15 @@ public class AssetAssignmentController : Controller
         if (values.IsSortByBranch)
         {
             options.OrderBy = a => a.BranchId;
+        }
+
+        if (values.DepartmentId.HasValue)
+        {
+            options.Where = a => a.DepartmentId == values.DepartmentId;
+        }
+        if (values.BranchId.HasValue)
+        {
+            options.Where = a => a.BranchId == values.BranchId;
         }
 
         if (!string.IsNullOrEmpty(values.SearchQuery))
@@ -43,12 +54,28 @@ public class AssetAssignmentController : Controller
             CurrentRoute = values,
             TotalPages = values.GetTotalPages(assignData.Count),
             Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName }),
+            Departments = departmentData.List(new QueryOptions<Department> { OrderBy = b => b.DepartmentName }),
         };
 
         return View(vm);
     }
 
-    
+
+    [HttpGet]
+    public IActionResult GetByBranch(int branchId)
+    {
+        var departments = departmentData.List(new QueryOptions<Department>
+        {
+            Where = d => d.BranchId == branchId,
+            OrderBy = d => d.DepartmentName
+        });
+
+        return Json(departments.Select(d => new {
+            id = d.DepartmentId,
+            name = d.DepartmentName
+        }));
+    }
+
     // select (posted from genre drop down on Index page). 
     [HttpPost]
     public RedirectToActionResult Select(int id, string operation)
@@ -64,7 +91,6 @@ public class AssetAssignmentController : Controller
         }
     }
 
-    [HttpGet]
     [HttpGet]
     public IActionResult Add(int? assetId)
     {
@@ -249,6 +275,7 @@ public class AssetAssignmentController : Controller
     private void LoadViewData(AssignmentViewModel vm)
     {
         vm.Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName });
+        vm.Departments = departmentData.List(new QueryOptions<Department> { OrderBy = b => b.DepartmentName });
         vm.Assets = assetData.List(new QueryOptions<Asset> { OrderBy = a => a.AssetName });
     }
 }
