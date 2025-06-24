@@ -19,8 +19,10 @@ namespace Asset_Manager.Models
         // Filter Properties
         public int? BranchId { get; set; }
         public int? DepartmentId { get; set; }
+        public int? CategoryId { get; set; }
 
-
+        public bool ShowAll { get; set; } = false; // Default to false (show only active)
     }
-
 }
+
+

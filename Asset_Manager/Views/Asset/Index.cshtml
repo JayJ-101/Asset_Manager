@@ -1,172 +1,154 @@
 ﻿@model AssetListViewModel
 @{
-    ViewData["Title"] = "Manage Asset";
+    ViewData["Title"] = "Manage Assets";
 
-    AssetGridData current = Model.CurrentRoute;
-    GridData routes = Model.CurrentRoute.Clone();
+    var current = Model.CurrentRoute;
+    var routes = Model.CurrentRoute.Clone();
 }
 
-<h5 class="mt-1"><a asp-action="Add"> Add Asset</a></h5>
+<h2 class="mt-3 mb-4">Assets Inventory</h2>
 
-<!-- Filter Form -->
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row">
-        <!-- Search Bar -->
-        <div class="col-md-3">
-            <label for="SearchQuery" class="form-label">Search Asset</label>
-            <input type="text" id="SearchQuery" name="SearchQuery"
-                   value="@Model.CurrentRoute.SearchQuery" class="form-control"
-                   placeholder="Enter supplier name or contact">
-        </div>
-
-        <!-- Category Dropdown -->
-        <div class="col-md-2">
-            <label for="CategoryId" class="form-label">Category</label>
-            <select id="CategoryId" name="CategoryId" class="form-select">
-                <option value="">All</option>
-                @foreach (var category in Model.Categories)
-                {
-                    <option value="@category.CategoryId" selected="@(category.CategoryId == Model.CurrentRoute.CategoryId)">
-                        @category.CategoryName
-                    </option>
-                }
-            </select>
-        </div>
-
-
-        <!-- Status Dropdown -->
-        <div class="col-md-2">
-            <label for="Status" class="form-label">Status</label>
-            <select id="Status" name="Status" class="form-select">
-                <option value="">All</option>
-                @foreach (var status in Model.Statuses)
-                {
-                    <option value="@status" selected="@(status == Model.CurrentRoute.Status)">
-                        @status
-                    </option>
-                }
-            </select>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="col-md-2 align-self-end">
-            <button type="submit" class="btn btn-primary mt-2">Apply</button>
-        </div>
+<form asp-action="Index" method="get" class="row g-3 align-items-end mb-4">
+    <div class="col-md-3">
+        <label for="SearchQuery" class="form-label">Search Asset</label>
+        <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
+               value="@current.SearchQuery" placeholder="Name, Serial, Model...">
+    </div>
+    <div class="col-md-2">
+        <label for="CategoryId" class="form-label">Category</label>
+        <select id="CategoryId" name="CategoryId" class="form-select">
+            <option value="">All</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.CategoryId" selected="@(category.CategoryId == current.CategoryId)">
+                    @category.CategoryName
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="Status" class="form-label">Status</label>
+        <select id="Status" name="Status" class="form-select">
+            <option value="">All</option>
+            @foreach (var status in Model.Statuses)
+            {
+                <option value="@status" selected="@(status == current.Status)">@status</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+    </div>
+    <div class="col-md-3 text-end">
+        <a asp-action="Add" class="btn btn-outline-success w-100">
+            <strong>+ Add Asset</strong>
+        </a>
     </div>
 </form>
-
-<!-- Asset Table -->
-<table class="table table-bordered table-striped table-sm">
+<hr />
+<table class="table table-bordered table-hover table-sm align-middle">
     <thead class="table-dark text-white">
         <tr>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.Manufacturer), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Manufacturer</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">Manufacturer</a>
             </th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.Model), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Model</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">Model</a>
             </th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.AssetName), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Asset Name</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">Name</a>
             </th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.SerialNumber), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Serial Number</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">Serial</a>
             </th>
-
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.SupplierId), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Supplier</a>
-            </th>
-
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.CategoryId), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Category</a>
-            </th>
-            
-           
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.Status), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Status</a>
-            </th>
-            
+            <th>Supplier</th>
+            <th>Category</th>
+            <th>Status</th>
             <th>
                 @{
                     routes.SetSortAndDirection(nameof(Asset.WarrantyExpiryDate), current);
                 }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Warranty Date</a>
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">Warranty</a>
             </th>
-            <th>
-f
-            </th>
+            <th>Actions</th>
         </tr>
     </thead>
-
     <tbody>
-        @foreach (Asset asset in Model.Assets)
+        @foreach (var asset in Model.Assets)
         {
             <tr>
                 <td>@asset.Manufacturer</td>
                 <td>@asset.Model</td>
                 <td>@asset.AssetName</td>
                 <td>@asset.SerialNumber</td>
-                <td>@asset.Supplier.SupplierName</td>
+                <td>@asset.Supplier?.SupplierName</td>
                 <td>@asset.Category?.CategoryName</td>
-                <td>@asset.Status</td>
-                <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
                 <td>
-                    <a asp-controller="AssetAssignment" asp-action="Add" 
-                        asp-route-assetId="@asset.AssetId"
-                        class="btn btn-sm btn-warning">Assign</a>
-                    <a asp-action="Details" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Details</a>
-                    <a asp-action="Edit" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@asset.AssetId" class="btn btn-sm btn-primary">Delete</a>
+                    <span class="badge bg-@(
+                        asset.Status == "Available" ? "success" :
+                        asset.Status == "In Use" ? "primary" :
+                        asset.Status == "Under Maintenance" ? "warning text-dark" :
+                        "secondary")">
+                        @asset.Status
+                    </span>
                 </td>
+                <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
+                <td class="text-nowrap">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item text-warning"
+                                   asp-controller="AssetAssignment" asp-action="Add" asp-route-assetId="@asset.AssetId">
+                                    Assign
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-info"
+                                   asp-action="Details" asp-route-id="@asset.AssetId">
+                                    Details
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-primary"
+                                   asp-action="Edit" asp-route-id="@asset.AssetId">
+                                    Edit
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger"
+                                   asp-action="Delete" asp-route-id="@asset.AssetId">
+                                    Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+
             </tr>
         }
     </tbody>
 </table>
 
-<!-- Paging Links -->
-@{
-    routes = current.Clone();
-    for (int i = 1; i <= Model.TotalPages; i++)
+<div class="mt-3">
+    @for (int i = 1; i <= Model.TotalPages; i++)
     {
         routes.PageNumber = i;
-        string active = @Nav.Active(i, current.PageNumber);
-        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()"
-           class="btn btn-outline-primary mb-2 @active">@i</a>
+        string active = Nav.Active(i, current.PageNumber);
+        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary me-1 @active">@i</a>
     }
-}
+</div>
