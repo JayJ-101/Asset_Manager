@@ -1,133 +1,158 @@
 ﻿@model AssignListViewModel
-
 @{
-    ViewData["Title"] = "Assigned Assets";
-    var current = Model.CurrentRoute;
+    ViewData["Title"] = "Manage Asset Assignment";
+    AssignGridData current = Model.CurrentRoute;
+    GridData routes = Model.CurrentRoute.Clone();
 }
 
-<h2>Assigned Assets</h2>
+<h6 class="mt-1"><a asp-action="Add">Assign Asset</a></h6>
+
 <form asp-action="Index" method="get" class="mb-4">
-    <div class="row g-3 align-items-end">
-        <!-- Filters -->
+    <div class="row">
         <div class="col-md-3">
             <label for="SearchQuery" class="form-label">Search by Employee</label>
             <input type="text" id="SearchQuery" name="SearchQuery"
-                   value="@Model.CurrentRoute.SearchQuery" class="form-control"
-                   placeholder="Enter employee name" />
+                   value="@current.SearchQuery" class="form-control"
+                   placeholder="Enter employee name">
         </div>
 
         <div class="col-md-2">
             <label for="BranchId" class="form-label">Branch</label>
-            <select id="BranchId" name="BranchId" class="form-select">
-                <option value="">All</option>
-                @foreach (var branch in Model.Branches)
-                {
-                    var selected = branch.BranchId == Model.CurrentRoute.BranchId ? "selected" : "";
-                    @:<option value="@branch.BranchId" @selected>@branch.BranchName</option>
-                }
-            </select>
+           <select id="BranchId" name="BranchId" class="form-select">
+           @foreach (var branch in Model.Branches)
+            {
+                var selected = branch.BranchId == Model.CurrentRoute.BranchId ? "selected" : "";
+                @:<option value="@branch.BranchId" @selected>@branch.BranchName</option>
+            }
+
+        </select>
+
         </div>
 
         <div class="col-md-2">
             <label for="DepartmentId" class="form-label">Department</label>
             <select id="DepartmentId" name="DepartmentId" class="form-select">
-                <option value="">All</option>
-                @foreach (var department in Model.Departments)
+               @foreach (var dept in Model.Departments)
                 {
-                    var selected = department.DepartmentId == Model.CurrentRoute.DepartmentId ? "selected" : "";
-                    @:<option value="@department.DepartmentId" @selected>@department.DepartmentName</option>
+                    var selected = dept.DepartmentId == Model.CurrentRoute.DepartmentId ? "selected" : "";
+                    @:<option value="@dept.DepartmentId" @selected>@dept.DepartmentName</option>
                 }
+
             </select>
         </div>
 
-        <div class="col-md-2">
-            <label for="CategoryId" class="form-label">Category</label>
-            <select id="CategoryId" name="CategoryId" class="form-select">
-                <option value="">All</option>
-                @foreach (var category in Model.Categories)
-                {
-                    var selected = category.CategoryId == Model.CurrentRoute.CategoryId ? "selected" : "";
-                    @:<option value="@category.CategoryId" @selected>@category.CategoryName</option>
-                }
-            </select>
-        </div>
-
-        <div class="col-sm-1">
-            <div class="form-check mt-4">
-                <input class="form-check-input" type="checkbox" name="ShowAll" id="ShowAll"
-                       value="true" @(Model.CurrentRoute.ShowAll ? "checked" : "") />
-                <label class="form-check-label" for="ShowAll">Show All</label>
-            </div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="col-md-2 d-flex justify-content-end gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">Apply</button>
-            <a asp-action="Add" class="btn btn-outline-success">
-                <strong>+ Assign</strong>
-            </a>
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary mt-2">Apply</button>
         </div>
     </div>
 </form>
 
-
-
-<hr />
-
-@if (Model.Assign.Any())
-{
-  <table class="table table-bordered table-hover table-sm align-middle">
+<table class="table table-bordered table-striped table-sm">
     <thead class="table-dark text-white">
+        <tr>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.AssetTag), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Asset Tag
+                </a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Employee
+                </a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Branch
+                </a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Department
+                </a>
+            </th>
+            
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Assigned Date
+                </a>
+            </th>
+            <th>
+                @{
+                    routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current);
+                }
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                    Return Date
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var assignment in Model.Assign)
+        {
             <tr>
-                <th>Asset</th>
-                <th>Category</th>
-                <th>Serial</th>
-                <th>Assigned To</th>
-                <th>Department</th>
-                <th>Branch</th>
-                <th>Assigned</th>
-                <th>Status</th>
-                <th>Return</th>
+                <td>@assignment.AssetTag</td>
+                <td>@assignment.Employee</td>
+                <td>@assignment.Branch?.BranchName</td>
+                <td>@assignment.Department?.DepartmentName</td>
+                <td>@assignment.AssginedDate.ToShortDateString()</td>
+                <td>
+                    @(assignment.ReturnDate.HasValue
+                        ? assignment.ReturnDate.Value.ToShortDateString()
+                        : "Not Returned")
+                </td>
+                <td>
+                    <form asp-action="Select" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@assignment.AssingmentId" />
+                        <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId"
+                           class="btn btn-sm btn-warning">Return</a>
+                        <button type="submit" name="operation" value="edit" class="btn btn-sm btn-warning">Edit</button>
+                        <button type="submit" name="operation" value="delete" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var a in Model.Assign)
-            {
-                <tr>
-                    <td>@a.Asset?.AssetName</td>
-                    <td>@a.Asset?.Category?.CategoryName</td>
-                    <td>@a.Asset?.SerialNumber</td>
-                    <td>@a.Employee</td>
-                    <td>@a.Department?.DepartmentName</td>
-                    <td>@a.Branch?.BranchName</td>
-                    <td>@a.AssginedDate.ToShortDateString()</td>
-                    <td>
-                        @if (a.ReturnDate == null)
-                        {
-                            <span class="badge bg-success">Active</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary">Returned</span>
-                        }
-                    </td>
-                    <td>
-                        @if (a.ReturnDate == null)
-                        {
-                            <a asp-action="ReturnAsset" asp-route-id="@a.AssingmentId"
-                               class="btn btn-sm btn-outline-warning">Return</a>
-                        }
-                        else
-                        {
-                            <span class="text-muted">—</span>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No assignments match your filters.</p>
-}
+        }
+    </tbody>
+</table>
+
+<div>
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+        string active = Nav.Active(i, current.PageNumber);
+        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
+    }
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#BranchId').change(function () {
+            var branchId = $(this).val();
+            $('#DepartmentId').html('<option>Loading...</option>');
+
+            $.get('/Department/GetByBranch', { branchId: branchId }, function (data) {
+                var options = '<option value="">All</option>';
+                $.each(data, function (i, dept) {
+                    options += `<option value="${dept.id}">${dept.name}</option>`;
+                });
+                $('#DepartmentId').html(options);
+            });
+        });
+    });
+</script>

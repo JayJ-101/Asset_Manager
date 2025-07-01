@@ -11,7 +11,5 @@ namespace Asset_Manager.Models
 
         public IEnumerable<Branch> Branches { get; set; } = new List<Branch>(); 
         public IEnumerable<Department> Departments { get; set; } = new List<Department>();
-        public IEnumerable<Category> Categories { get; set; } = new List<Category>();
-
     }
 }

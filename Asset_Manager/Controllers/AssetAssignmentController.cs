@@ -10,7 +10,6 @@ public class AssetAssignmentController : Controller
     private Repository<Branch> branchData { get; }
     private Repository<Department> departmentData { get; }
     private Repository<Asset> assetData { get; }
-    private Repository<Category> categoryData { get; }
 
     public AssetAssignmentController(AssetDbContext ctx)
     {
@@ -18,32 +17,36 @@ public class AssetAssignmentController : Controller
         branchData = new Repository<Branch>(ctx);
         departmentData = new Repository<Department>(ctx);
         assetData = new Repository<Asset>(ctx);
-        categoryData = new Repository<Category>(ctx);
     }
 
     public IActionResult Index(AssignGridData values)
     {
         var options = new QueryOptions<AssetAssignment>
         {
-            Includes = "Branch,Asset,Department,Asset.Category",
+            Includes = "Branch,Asset,Department",
             OrderByDirection = values.SortDirection,
             PageNumber = values.PageNumber,
             PageSize = values.PageSize,
         };
-
-        // Sorting
+    
         if (values.IsSortByBranch)
+        {
             options.OrderBy = a => a.BranchId;
-        else
-            options.OrderBy = a => a.AssginedDate;
+        }
 
-        //Combined filters in one lambda
-        options.Where = a =>
-            (values.ShowAll || a.ReturnDate == null) && // Active-only unless "Show All"
-            (string.IsNullOrEmpty(values.SearchQuery) || a.Employee.Contains(values.SearchQuery)) &&
-            (!values.BranchId.HasValue || a.BranchId == values.BranchId) &&
-            (!values.CategoryId.HasValue || a.Asset.CategoryId == values.CategoryId) &&
-            (!values.DepartmentId.HasValue || a.DepartmentId == values.DepartmentId);
+        if (values.DepartmentId.HasValue)
+        {
+            options.Where = a => a.DepartmentId == values.DepartmentId;
+        }
+        if (values.BranchId.HasValue)
+        {
+            options.Where = a => a.BranchId == values.BranchId;
+        }
+
+        if (!string.IsNullOrEmpty(values.SearchQuery))
+        {
+            options.Where = a => a.Employee.Contains(values.SearchQuery);
+        }
 
         var vm = new AssignListViewModel
         {
@@ -52,13 +55,10 @@ public class AssetAssignmentController : Controller
             TotalPages = values.GetTotalPages(assignData.Count),
             Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName }),
             Departments = departmentData.List(new QueryOptions<Department> { OrderBy = b => b.DepartmentName }),
-            Categories = categoryData.List(new QueryOptions<Category> { OrderBy = c => c.CategoryName })
-
         };
 
         return View(vm);
     }
-
 
 
     [HttpGet]
@@ -104,6 +104,13 @@ public class AssetAssignmentController : Controller
         LoadViewData(vm);
         return View("AssetAssignment", vm);
     }
+
+    //public IActionResult Add()
+    //{
+    //    var vm = new AssignmentViewModel();
+    //    LoadViewData(vm);
+    //    return View("AssetAssignment", vm);
+    //}
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -269,11 +276,6 @@ public class AssetAssignmentController : Controller
     {
         vm.Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName });
         vm.Departments = departmentData.List(new QueryOptions<Department> { OrderBy = b => b.DepartmentName });
-        
-        vm.Assets = assetData.List(new QueryOptions<Asset>
-        {
-            Where = a => a.Status == "Available", // Only unassigned
-            OrderBy = a => a.AssetName
-        });
+        vm.Assets = assetData.List(new QueryOptions<Asset> { OrderBy = a => a.AssetName });
     }
 }
