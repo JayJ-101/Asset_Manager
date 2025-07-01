@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asset_Manager.Models.DomainModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
@@ -42,5 +43,6 @@ namespace Asset_Manager.Models
         public DateTime WarrantyExpiryDate { get; set; } = DateTime.Now.AddYears(2);
 
         public ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
+        public ICollection<MaintenanceLog> MaintenanceLogs { get; set; } = new List<MaintenanceLog>();
     }
 }

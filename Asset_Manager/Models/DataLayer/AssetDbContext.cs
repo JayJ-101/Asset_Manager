@@ -1,4 +1,5 @@
 ﻿using Asset_Manager.Models;
+using Asset_Manager.Models.DomainModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asset_Manager.Models
@@ -13,6 +14,7 @@ namespace Asset_Manager.Models
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Supplier> Supplier { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<MaintenanceLog> MaintenanceLogs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,9 +24,8 @@ namespace Asset_Manager.Models
             modelBuilder.ApplyConfiguration(new BranchConfiguration());
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
-           
+            modelBuilder.ApplyConfiguration(new MaintenanceLogConfiguration());
             //modelBuilder.ApplyConfiguration(new AssignmentConfiguration());
-            //modelBuilder.ApplyConfiguration(new MaintenanceLogConfiguration());
         }
     }
 }
