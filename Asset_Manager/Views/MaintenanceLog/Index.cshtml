@@ -1,0 +1,10 @@
+﻿@model MaintenanceLogListVM
+@{
+    ViewData["Title"] = "Manage Maintenance";
+
+    MaintenanceGriData current = Model.CurrentRoute;
+    GridData gridData = Model.CurrentRoute.Clone();
+}
+
+<h5 class="mt-1"><a asp-action="Add">Add Maintenance</a></h5>
+

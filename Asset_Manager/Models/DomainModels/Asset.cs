@@ -42,5 +42,6 @@ namespace Asset_Manager.Models
         public DateTime WarrantyExpiryDate { get; set; } = DateTime.Now.AddYears(2);
 
         public ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
+        public ICollection<MaintenanceLog> MaintenanceLogs { get; set; } = new List<MaintenanceLog>();
     }
 }
