@@ -8,7 +8,7 @@
 
         public IEnumerable<string> Statuses { get; set; } = new List<string>
         {
-            "Available", "In Use", "Under Maintenance" ,"Decomissioned"
+           "Pending", "Completed", "In Progress"
         };
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Asset_Manager.Models  
 {
@@ -9,6 +10,7 @@ namespace Asset_Manager.Models
 
         [Required]
         public int AssetId { get; set; }
+        [ValidateNever]
         public Asset Asset { get; set; } = null!;
 
         [Required]
