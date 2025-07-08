@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
-namespace Asset_Manager.Models.DomainModels
+namespace Asset_Manager.Models  
 {
     public class MaintenanceLog
     {
@@ -9,6 +10,7 @@ namespace Asset_Manager.Models.DomainModels
 
         [Required]
         public int AssetId { get; set; }
+        [ValidateNever]
         public Asset Asset { get; set; } = null!;
 
         [Required]

@@ -1,0 +1,111 @@
+﻿@model MaintenanceLogListVM
+@{
+    ViewData["Title"] = "Maintenance Logs";
+    var current = Model.CurrentRoute;
+    var routes = current.Clone();
+}
+
+<h2 class="mb-4">Maintenance Logs</h2>
+
+<!-- Filter Form -->
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="SearchQuery" class="form-label">Search by Asset</label>
+            <input type="text" id="SearchQuery" name="SearchQuery"
+                   value="@current.SearchQuery" class="form-control"
+                   placeholder="Asset name" />
+        </div>
+
+        <div class="col-md-2">
+            <label for="Status" class="form-label">Status</label>
+            <select id="Status" name="Status" class="form-select">
+                <option value="">All</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status" selected="@(status == current.Status)">@status</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+
+        <div class="col-md-3 text-end">
+            <a asp-action="Add" class="btn btn-success">+ Add Maintenance Log</a>
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<!-- Table -->
+@if (Model.MaintenanceLogs.Any())
+{
+    <table class="table table-bordered table-striped table-sm">
+        <thead class="table-dark text-white">
+            <tr>
+                <th>
+                    @{
+                        routes.SetSortAndDirection(nameof(MaintenanceLog.Asset.AssetName), current);
+                    }
+                    <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                        Asset
+                    </a>
+                </th>
+                <th>Description</th>
+                <th>Technician</th>
+                <th>Logged Date</th>
+                <th>Completed</th>
+                <th>Status</th>
+                <th class="text-nowrap">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model.MaintenanceLogs)
+            {
+                <tr>
+                    <td>@log.Asset?.AssetName</td>
+                    <td>@log.Description</td>
+                    <td>@log.Tecnician</td>
+                    <td>@log.LoggedDate.ToShortDateString()</td>
+                    <td>@(log.CompletionDate?.ToShortDateString() ?? "—")</td>
+                    <td>
+                        @if (log.Status == "Pending")
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                        else if (log.Status == "In Progress")
+                        {
+                            <span class="badge bg-info text-dark">In Progress</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Completed</span>
+                        }
+                    </td>
+                    <td class="text-nowrap">
+                        <a asp-action="Edit" asp-route-id="@log.MaintenanceId" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@log.MaintenanceId" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No maintenance logs found.</p>
+}
+
+<!-- Paging -->
+<div class="mt-3">
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+        var active = Nav.Active(i, current.PageNumber);
+        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()"
+           class="btn btn-outline-primary btn-sm @active">@i</a>
+    }
+</div>

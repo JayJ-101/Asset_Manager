@@ -25,6 +25,7 @@ namespace Asset_Manager.Models
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new MaintenanceLogConfiguration());
+
             //modelBuilder.ApplyConfiguration(new AssignmentConfiguration());
         }
     }
