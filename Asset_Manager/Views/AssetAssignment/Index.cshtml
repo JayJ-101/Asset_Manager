@@ -1,107 +1,120 @@
 ﻿@model AssignListViewModel
+
 @{
     ViewData["Title"] = "Manage Asset Assignment";
     AssignGridData current = Model.CurrentRoute;
     GridData routes = Model.CurrentRoute.Clone();
 }
 
-<h6 class="mt-1"><a asp-action="Add">Assign Asset</a></h6>
+@* <h2 class="mb-4">Asset Assignments</h2> *@
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Asset Assignments</h2>
+    <a asp-action="Add" class="btn btn-outline-success">
+        <i class="bi bi-plus-lg"></i> + Assign Asset
+    </a>
+</div>
+
 
 <form asp-action="Index" method="get" class="mb-4">
-    <div class="row">
+    <div class="row g-3 align-items-end">
         <div class="col-md-3">
             <label for="SearchQuery" class="form-label">Search by Employee</label>
-            <input type="text" id="SearchQuery" name="SearchQuery"
-                   value="@current.SearchQuery" class="form-control"
-                   placeholder="Enter employee name">
+            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
+                   value="@current.SearchQuery" placeholder="Enter employee name" />
         </div>
 
         <div class="col-md-2">
             <label for="BranchId" class="form-label">Branch</label>
-           <select id="BranchId" name="BranchId" class="form-select">
-           @foreach (var branch in Model.Branches)
-            {
-                var selected = branch.BranchId == Model.CurrentRoute.BranchId ? "selected" : "";
-                @:<option value="@branch.BranchId" @selected>@branch.BranchName</option>
-            }
-
-        </select>
-
+            <select id="BranchId" name="BranchId" class="form-select">
+                <option value="">All</option>
+                @foreach (var branch in Model.Branches)
+                {
+                    var selected = branch.BranchId == current.BranchId ? "selected" : "";
+                    @:<option value="@branch.BranchId" @selected>@branch.BranchName</option>
+                }
+            </select>
         </div>
 
         <div class="col-md-2">
             <label for="DepartmentId" class="form-label">Department</label>
             <select id="DepartmentId" name="DepartmentId" class="form-select">
-               @foreach (var dept in Model.Departments)
+                <option value="">All</option>
+                @foreach (var dept in Model.Departments)
                 {
-                    var selected = dept.DepartmentId == Model.CurrentRoute.DepartmentId ? "selected" : "";
+                    var selected = dept.DepartmentId == current.DepartmentId ? "selected" : "";
                     @:<option value="@dept.DepartmentId" @selected>@dept.DepartmentName</option>
                 }
-
             </select>
         </div>
 
-        <div class="col-md-2 align-self-end">
-            <button type="submit" class="btn btn-primary mt-2">Apply</button>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary mt-2">Apply Filters</button>
         </div>
+
+      @*   <div class="col-md-3 text-end">
+            <a asp-action="Add" class="btn btn-outline-success">
+                <strong>+ Assign Asset</strong>
+            </a>
+        </div> *@
     </div>
 </form>
 
-<table class="table table-bordered table-striped table-sm">
+<table class="table table-bordered table-striped table-hover table-sm">
     <thead class="table-dark text-white">
         <tr>
+            @* Asset Tag *@
             <th>
-                @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.AssetTag), current);
-                }
+                @{ routes.SetSortAndDirection(nameof(AssetAssignment.AssetTag), current); }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
                     Asset Tag
                 </a>
             </th>
+
+            @* Employee *@
             <th>
-                @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current);
-                }
+                @{ routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current); }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
                     Employee
                 </a>
             </th>
+
+            @* Branch *@
             <th>
-                @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current);
-                }
+                @{ routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current); }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
                     Branch
                 </a>
             </th>
+
+            @* Department *@
             <th>
-                @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current);
-                }
+                @{ routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current); }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
                     Department
                 </a>
             </th>
-            
+
+            @* Assigned Date *@
             <th>
-                @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current);
-                }
+                @{ routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current); }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
                     Assigned Date
                 </a>
             </th>
+
+            @* Return Date *@
             <th>
-                @{
-                    routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current);
-                }
+                @{ routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current); }
                 <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
                     Return Date
                 </a>
             </th>
+
             <th>Actions</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach (var assignment in Model.Assign)
         {
@@ -112,18 +125,28 @@
                 <td>@assignment.Department?.DepartmentName</td>
                 <td>@assignment.AssginedDate.ToShortDateString()</td>
                 <td>
-                    @(assignment.ReturnDate.HasValue
-                        ? assignment.ReturnDate.Value.ToShortDateString()
-                        : "Not Returned")
+                    @(assignment.ReturnDate?.ToShortDateString() ?? "Not Returned")
                 </td>
                 <td>
-                    <form asp-action="Select" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@assignment.AssingmentId" />
-                        <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId"
-                           class="btn btn-sm btn-warning">Return</a>
-                        <button type="submit" name="operation" value="edit" class="btn btn-sm btn-warning">Edit</button>
-                        <button type="submit" name="operation" value="delete" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId" class="dropdown-item text-warning">
+                                    Return
+                                </a>
+                            </li>
+                            <li>
+                                <form asp-action="Select" method="post">
+                                    <input type="hidden" name="id" value="@assignment.AssingmentId" />
+                                    <button type="submit" name="operation" value="edit" class="dropdown-item text-primary">Edit</button>
+                                    <button type="submit" name="operation" value="delete" class="dropdown-item text-danger">Delete</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
         }
@@ -139,20 +162,26 @@
     }
 </div>
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#BranchId').change(function () {
+                var branchId = $(this).val();
+                $('#DepartmentId').html('<option>Loading...</option>');
 
-<script>
-    $(document).ready(function () {
-        $('#BranchId').change(function () {
-            var branchId = $(this).val();
-            $('#DepartmentId').html('<option>Loading...</option>');
-
-            $.get('/Department/GetByBranch', { branchId: branchId }, function (data) {
-                var options = '<option value="">All</option>';
-                $.each(data, function (i, dept) {
-                    options += `<option value="${dept.id}">${dept.name}</option>`;
+                $.get('/Department/GetByBranch', { branchId: branchId }, function (data) {
+                    var options = '<option value="">All</option>';
+                    $.each(data, function (i, dept) {
+                        options += `<option value="${dept.id}">${dept.name}</option>`;
+                    });
+                    $('#DepartmentId').html(options);
                 });
-                $('#DepartmentId').html(options);
+            });
+
+            $('.select2').select2({
+                placeholder: "Select...",
+                width: '100%'
             });
         });
-    });
-</script>
+    </script>
+}
