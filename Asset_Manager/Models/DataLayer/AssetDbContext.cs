@@ -1,4 +1,4 @@
-﻿using Asset_Manager.Models;
+﻿
 using Microsoft.EntityFrameworkCore;
 
 namespace Asset_Manager.Models
