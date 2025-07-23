@@ -15,6 +15,9 @@ namespace Asset_Manager.Models
         [Required(ErrorMessage = "Employee name requried.")]
         public string Employee {  get; set; }   = string.Empty;
 
+        //public string AssignedToUserId { get; set; } = null!;
+        //public AppUser AssignedToUser { get; set; } = null!;
+
         public int DepartmentId { get; set; }
         [ValidateNever]
         public Department Department { get; set; } = null!;

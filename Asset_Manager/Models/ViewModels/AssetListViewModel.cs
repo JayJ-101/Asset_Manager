@@ -14,5 +14,11 @@
         {
             "Available", "In Use", "Under Maintenance" ,"Decomissioned"
         };
+
+
+        public int TotalAssets => Assets.Count();
+        public int AvailableCount => Assets.Count(a => a.Status == "Available");
+        public int MaintenanceCount => Assets.Count(a => a.Status == "Under Maintenance");
+        public int AssignedCount => Assets.Count(a => a.Status == "Assigned");
     }
 }

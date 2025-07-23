@@ -63,6 +63,9 @@ namespace Asset_Manager.Controllers
                 }),
                 
                 Statuses = new List<string> { "Available", "In Use", "Under Maintenance", "Decomissioned" }
+
+
+
             };
         
             return View(vm);

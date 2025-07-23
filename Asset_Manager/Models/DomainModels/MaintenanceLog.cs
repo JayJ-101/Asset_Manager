@@ -26,5 +26,7 @@ namespace Asset_Manager.Models
 
         [StringLength(100)]
         public string Status { get; set; } = "Pending";//Pending, In Progress,Completed
+
+        public string? Remarks { get; set; }
     }
 }

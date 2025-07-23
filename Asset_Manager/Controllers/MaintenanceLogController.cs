@@ -21,16 +21,23 @@ namespace Asset_Manager.Controllers
         {
             var options = new QueryOptions<MaintenanceLog>()
             {
-                Includes= "Asset",
+                Includes = "Asset",
                 OrderByDirection = values.SortDirection,
                 PageSize = values.PageSize,
             };
-  
-            if (values.IsSortByAssetName)
+
+            // Set default sort if not specified
+            if (string.IsNullOrEmpty(values.SortField))
             {
-                options.OrderBy = a => a.AssetId;
+                options.OrderBy = a => a.LoggedDate;
+                options.OrderByDirection = "desc"; // Show newest first by default
+            }
+            else if (values.IsSortByAssetName)
+            {
+                options.OrderBy = a => a.Asset.AssetName;
             }
 
+            // Apply filters only if they exist
             if (!string.IsNullOrEmpty(values.SearchQuery))
             {
                 options.Where = a => a.Asset.AssetName.Contains(values.SearchQuery);
@@ -48,6 +55,12 @@ namespace Asset_Manager.Controllers
                 TotalPages = values.GetTotalPages(logData.Count),
                 Statuses = new List<string> { "Pending", "Completed", "In Progress" }
             };
+            // Debug output - remove after testing
+            Console.WriteLine($"Total logs found: {vm.MaintenanceLogs.Count()}");
+            foreach (var log in vm.MaintenanceLogs)
+            {
+                Console.WriteLine($"Log ID: {log.MaintenanceId}, Asset: {log.Asset?.AssetName}, Status: {log.Status}");
+            }
             return View(vm);
         }
 
@@ -82,32 +95,27 @@ namespace Asset_Manager.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add(MaintenanceLogViewModel vm)
         {
-            //foreach (var modelState in ModelState)
-            //{
-            //    foreach (var error in modelState.Value.Errors)
-            //    {
-            //        Console.WriteLine($"Key: {modelState.Key}, Error: {error.ErrorMessage}");
-            //    }
-            //}
-
             if (!ModelState.IsValid)
             {
                 vm.Assets = assetData.List(new QueryOptions<Asset> { OrderBy = a => a.AssetName });
                 return View("MaintenanceLog", vm);
             }
-            
-           
+
             logData.Insert(vm.MaintenanceLog);
             logData.Save();
 
-            //Set Asset.Status to "Under Maintenance"
+            // Debug output
             var asset = assetData.Get(vm.MaintenanceLog.AssetId);
+            Console.WriteLine($"Asset before update - ID: {asset?.AssetId}, Status: {asset?.Status}");
+
             if (asset != null)
             {
                 asset.Status = "Under Maintenance";
                 assetData.Update(asset);
                 assetData.Save();
+                Console.WriteLine($"Asset after update - ID: {asset.AssetId}, Status: {asset.Status}");
             }
+
             TempData["message"] = $"Maintenance logged for asset: {asset?.AssetName}.";
             return RedirectToAction("Index");
         }

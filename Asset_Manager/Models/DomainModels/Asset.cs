@@ -35,7 +35,11 @@ namespace Asset_Manager.Models
         public Supplier Supplier { get; set; } = null!;
 
         public string Status { get; set; } = "Available";
-         
+
+
+        [DataType(DataType.Date)]
+        public DateTime PurchaseDate { get; set; }
+
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Warranty Expiry Date is required.")]
         [WarrantyExpiryDateValidation(ErrorMessage = "Warranty Expiry Date must be in the future.")]
