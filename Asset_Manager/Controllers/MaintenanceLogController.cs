@@ -51,7 +51,6 @@ namespace Asset_Manager.Controllers
             return View(vm);
         }
 
-        
         // select (posted from genre drop down on Index page). 
         [HttpPost]
         public RedirectToActionResult Select(int id, string operation)
