@@ -14,3 +14,27 @@
 .body {
     background-color: rgba(192,192,192,0.3);
 }
+
+
+
+
+/* Sidebar hover consistency */
+.sidebar-nav .hover-light:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: .375rem;
+    transition: background-color 0.3s ease;
+}
+
+/* Smooth dropdown */
+.submenu {
+    transition: all 0.35s ease;
+}
+
+/* Rotate chevron when expanded */
+.transition {
+    transition: transform 0.3s ease;
+}
+
+.rotate {
+    transform: rotate(180deg);
+}

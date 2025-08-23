@@ -1,0 +1,131 @@
+﻿@model MaintenanceDashboardVM
+@{
+    ViewData["Title"] = "Maintenance Dashboard";
+}
+
+<div class="container">
+    <h2 class="mb-4">Maintenance Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Maintenance</h5>
+                    <p class="card-text display-4">@Model.PendingCount</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">In Progress</h5>
+                    <p class="card-text display-4">@Model.InProgressCount</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Completed Today</h5>
+                    <p class="card-text display-4">@Model.MaintenanceCompletedToday</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asset Status Overview -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Asset Status Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p>Total Assets: <strong>@Model.TotalAssets</strong></p>
+                        </div>
+                        <div class="col-md-4">
+                            <p>Under Maintenance: <strong>@Model.AssetsUnderMaintenance</strong></p>
+                        </div>
+                        <div class="col-md-4">
+                            <p>Available: <strong>@Model.AvailableAssets</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Maintenance -->
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5>Overdue Maintenance (Older than 7 days)</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.OverdueMaintenance.Any())
+            {
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Logged Date</th>
+                            <th>Days Overdue</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.OverdueMaintenance)
+                        {
+                            <tr>
+                                <td>@log.Asset?.AssetName</td>
+                                <td>@log.LoggedDate.ToShortDateString()</td>
+                                <td>@((DateTime.Now - log.LoggedDate).Days)</td>
+                                <td>@log.Description</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@log.MaintenanceId"
+                                       class="btn btn-sm btn-primary">Update</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No overdue maintenance items</p>
+            }
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Recent Maintenance Activity</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                @foreach (var activity in Model.RecentActivities)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">@activity.AssetName</h6>
+                            <small>@activity.Date.ToString("g")</small>
+                        </div>
+                        <p class="mb-1">@activity.Description</p>
+                        <small>
+                            Status: <span class="badge bg-@(activity.Status == "Completed" ? "success" : "warning")">
+                                @activity.Status
+                            </span>
+                            | Technician: @activity.Technician
+                        </small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

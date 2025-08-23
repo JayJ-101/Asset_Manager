@@ -28,5 +28,9 @@ namespace Asset_Manager.Models
         public string Status { get; set; } = "Pending";//Pending, In Progress,Completed
 
         public string? Remarks { get; set; }
+
+        public int? DurationDays => CompletionDate.HasValue
+        ? (int)(CompletionDate.Value - LoggedDate).TotalDays
+        : null;
     }
 }

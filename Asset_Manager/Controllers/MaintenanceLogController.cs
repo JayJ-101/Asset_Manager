@@ -17,27 +17,74 @@ namespace Asset_Manager.Controllers
             assetData = new Repository<Asset>(ctx);
         }
 
+        public IActionResult Dashboard()
+        {
+            var now = DateTime.Now;
+            var thirtyDaysAgo = now.AddDays(-30);
+
+            // Get all relevant data
+            var maintenanceLogs = logData.List(new QueryOptions<MaintenanceLog>
+            {
+                Includes = "Asset"
+            });
+
+            var assets = assetData.List(new QueryOptions<Asset>());
+
+            var vm = new MaintenanceDashboardVM
+            {
+                // Maintenance-specific metrics
+                PendingCount = maintenanceLogs.Count(m => m.Status == "Pending"),
+                InProgressCount = maintenanceLogs.Count(m => m.Status == "In Maintenance"),
+                MaintenanceCompletedToday = maintenanceLogs.Count(m =>
+                    m.Status == "Completed" &&
+                    m.CompletionDate?.Date == now.Date),
+
+                // Asset status metrics
+                TotalAssets = assets.Count(),
+                AssetsUnderMaintenance = assets.Count(a => a.Status == "In Maintenance"),
+                AvailableAssets = assets.Count(a => a.Status == "Available"),
+
+                // Overdue maintenance
+                OverdueMaintenance = maintenanceLogs
+                    .Where(m => m.Status == "Pending" && m.LoggedDate < now.AddDays(-7))
+                    .ToList(),
+
+                // Recent maintenance activities
+                RecentActivities = maintenanceLogs
+                    .OrderByDescending(m => m.LoggedDate)
+                    .Take(5)
+                    .Select(m => new MaintenanceActivityVM
+                    {
+                        AssetName = m.Asset?.AssetName ?? "Unknown Asset",
+                        Description = m.Description,
+                        Status = m.Status,
+                        Date = m.LoggedDate,
+                        Technician = m.Tecnician
+                    })
+                    .ToList()
+            };
+
+            return View(vm);
+        }
+
+
         public IActionResult Index(MaintenanceGriData values)
         {
             var options = new QueryOptions<MaintenanceLog>()
             {
                 Includes = "Asset",
-                OrderByDirection = values.SortDirection,
+                OrderByDirection = values.SortDirection ?? "desc", // Default to newest first
                 PageSize = values.PageSize,
+                OrderBy = a => a.LoggedDate // Default sort by LoggedDate
             };
 
-            // Set default sort if not specified
-            if (string.IsNullOrEmpty(values.SortField))
-            {
-                options.OrderBy = a => a.LoggedDate;
-                options.OrderByDirection = "desc"; // Show newest first by default
-            }
-            else if (values.IsSortByAssetName)
+            // Override default sort if sorting by asset name
+            if (values.IsSortByAssetName)
             {
                 options.OrderBy = a => a.Asset.AssetName;
             }
 
-            // Apply filters only if they exist
+            // Apply filters
             if (!string.IsNullOrEmpty(values.SearchQuery))
             {
                 options.Where = a => a.Asset.AssetName.Contains(values.SearchQuery);
@@ -48,6 +95,10 @@ namespace Asset_Manager.Controllers
                 options.Where = a => a.Status == values.Status;
             }
 
+            //// DEBUG: Check the raw SQL being generated
+            //var query = options.BuildQuery(logData.context.Set<MaintenanceLog>().AsQueryable());
+            //Console.WriteLine(query.ToQueryString());
+
             var vm = new MaintenanceLogListVM
             {
                 MaintenanceLogs = logData.List(options),
@@ -55,12 +106,7 @@ namespace Asset_Manager.Controllers
                 TotalPages = values.GetTotalPages(logData.Count),
                 Statuses = new List<string> { "Pending", "Completed", "In Progress" }
             };
-            // Debug output - remove after testing
-            Console.WriteLine($"Total logs found: {vm.MaintenanceLogs.Count()}");
-            foreach (var log in vm.MaintenanceLogs)
-            {
-                Console.WriteLine($"Log ID: {log.MaintenanceId}, Asset: {log.Asset?.AssetName}, Status: {log.Status}");
-            }
+
             return View(vm);
         }
 
@@ -126,7 +172,8 @@ namespace Asset_Manager.Controllers
         #region Completed Maintenance
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Complete(int id)
+        [HttpPost]
+        public IActionResult Complete(int id, string assetStatus = "Available")
         {
             var log = logData.Get(id);
             if (log == null) return NotFound();
@@ -134,18 +181,18 @@ namespace Asset_Manager.Controllers
             log.Status = "Completed";
             log.CompletionDate = DateTime.Now;
             logData.Update(log);
-            logData.Save();
 
             var asset = assetData.Get(log.AssetId);
             if (asset != null)
             {
-                // You can use logic to check if it should go to Available or back to Assigned
-                asset.Status = "Available"; // Or "Assigned" if reassigned
+                asset.Status = assetStatus; // "Available" or "Assigned"
                 assetData.Update(asset);
-                assetData.Save();
             }
 
-            TempData["message"] = "Maintenance completed and asset is now available.";
+            logData.Save();
+            assetData.Save();
+
+            TempData["message"] = $"Maintenance completed. Asset status set to {assetStatus}.";
             return RedirectToAction("Index");
         }
 
