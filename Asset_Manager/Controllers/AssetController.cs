@@ -37,7 +37,7 @@ namespace Asset_Manager.Controllers
 
             if (!string.IsNullOrEmpty(values.SearchQuery))
             {
-                options.Where = a =>a.AssetName.Contains(values.SearchQuery) || a.Model.Contains(values.SearchQuery) ||
+                options.Where = a =>a.Manufacturer.Contains(values.SearchQuery) || a.Model.Contains(values.SearchQuery) ||
                     a.SerialNumber.Contains(values.SearchQuery); 
             }
 
@@ -91,7 +91,16 @@ namespace Asset_Manager.Controllers
         public ViewResult Add()
         {
             var vm = new AssetViewModel();
+           
             LoadViewData(vm);
+            // Set default selections if categories exist
+            if (vm.Categories.Any())
+            {
+                vm.SelectedCategoryId = vm.Categories.First().CategoryId;
+            }
+
+            // Generate preview tag
+            vm.Asset.AssetName = GenerateAssetTagPreview(vm.SelectedCategoryId);
             return View("Asset", vm);
         }
 
@@ -109,6 +118,11 @@ namespace Asset_Manager.Controllers
 
             if (ModelState.IsValid)
             {
+                // Use the selected category ID to generate the tag
+                vm.Asset.AssetName = GenerateAssetTag(vm.SelectedCategoryId);
+                vm.Asset.CategoryId = vm.SelectedCategoryId;
+
+
                 assetData.Insert(vm.Asset);
                 assetData.Save();
                 TempData["message"] = $"{vm.Asset.AssetName} added to Assets";
@@ -143,7 +157,14 @@ namespace Asset_Manager.Controllers
               
                 var asset = GetAsset(vm.Asset.AssetId);
                 asset.Status = vm.Asset.Status;
-                
+                asset.Manufacturer = vm.Asset.Manufacturer;
+                asset.Model = vm.Asset.Model;
+                asset.AssetName = vm.Asset.AssetName;
+                asset.SerialNumber = vm.Asset.SerialNumber;
+                asset.CategoryId = vm.Asset.CategoryId;
+                asset.SupplierId = vm.Asset.SupplierId;
+                asset.PurchaseDate = vm.Asset.PurchaseDate;
+                asset.WarrantyExpiryDate = vm.Asset.WarrantyExpiryDate;
 
                 // don't need to call assetData.Update() - DB context is tracking   
                 assetData.Save();
@@ -222,6 +243,27 @@ namespace Asset_Manager.Controllers
           
           
         }
+
+        private string GenerateAssetTag(int categoryId)
+        {
+            var category = categoryData.Get(categoryId);
+            var categoryCode = (category?.CategoryName ?? "GEN").Substring(0, 3).ToUpper();
+
+            var nextNumber = assetData.List(new QueryOptions<Asset>
+            {
+                Where = a => a.CategoryId == categoryId
+            }).Count() + 1;
+
+            return $"AST-{categoryCode}-{nextNumber:D4}";
+        }
+
+        private string GenerateAssetTagPreview(int categoryId)
+        {
+            var category = categoryData.Get(categoryId);
+            var categoryCode = (category?.CategoryName ?? "GEN").Substring(0, 3).ToUpper();
+            return $"AST-{categoryCode}-XXXX";
+        }
+
         #endregion
     }
 }

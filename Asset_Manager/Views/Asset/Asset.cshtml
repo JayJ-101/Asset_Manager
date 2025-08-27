@@ -48,8 +48,10 @@
         <div class="row mb-2">
             <label class="col-form-label col-md-2">Category:</label>
             <div class="col-md-4">
-                <select asp-for="Asset.CategoryId" class="form-select category-select"
-                        asp-items='@new SelectList(Model.Categories, "CategoryId", "CategoryName")'>
+                <select asp-for="SelectedCategoryId" class="form-control"
+                        asp-items="@(new SelectList(Model.Categories, "CategoryId", "CategoryName"))"
+                        required>
+                    <option value="">-- Select Category --</option>
                 </select>
 
             </div>
@@ -65,7 +67,8 @@
         <div class="row mb-2">
                 <label asp-for="Asset.AssetName" class="col-form-label col-md-2">Asset Tag:</label>
             <div class="col-md-4">
-                <input type="text" asp-for="Asset.AssetName" class="form-control" />
+                <input type="text" asp-for="Asset.AssetName" class="form-control" readonly/>
+                <small class="text-mute">Auto-geberated when saving</small>
             </div>
             <div class="col">
                 <span asp-validation-for="Asset.AssetName" class="text-danger"></span>
@@ -87,6 +90,7 @@
             <div class="col-md-4">
                 <select asp-for="Asset.SupplierId" class="form-select"
                         asp-items='@new SelectList(Model.Suppliers, "SupplierId", "SupplierName", Model.Asset.SupplierId)'>
+                    <option value="">-- Select Supplier --</option>
                 </select>
             </div>
             <div class="col">
