@@ -2,12 +2,14 @@
 
 @{
     var action = ViewContext.RouteData.Values["action"]!.ToString()!.Capitalize();
-    ViewData["Title"] = $" | {action} Asset";
+    ViewData["Title"] = $" | {action} Assets";
 }
 
-<h1>@action Asset</h1>
+
 
 <form asp-action="@action" asp-area="" method="post" >
+     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
     @* AssetID needed by both delete and edit *@
     <input type="hidden" asp-for="Asset.AssetId" />
 
@@ -61,7 +63,7 @@
 
 
         <div class="row mb-2">
-                <label asp-for="Asset.AssetName" class="col-form-label col-md-2">Asset Name:</label>
+                <label asp-for="Asset.AssetName" class="col-form-label col-md-2">Asset Tag:</label>
             <div class="col-md-4">
                 <input type="text" asp-for="Asset.AssetName" class="form-control" />
             </div>
@@ -109,7 +111,12 @@
             </div>
         </div>
 
-        
+        <div class="row mb-2">
+            <label class="col-form-label col-md-2">Purchase Date:</label>
+            <div class="col-md-4">
+                <input type="date" asp-for="Asset.PurchaseDate" class="form-control" />
+            </div>
+        </div>
 
         <div class="row mb-2">
             <label class="col-form-label col-md-2">Warranty Expiry Date:</label>

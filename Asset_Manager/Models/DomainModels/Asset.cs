@@ -38,7 +38,9 @@ namespace Asset_Manager.Models
 
 
         [DataType(DataType.Date)]
-        public DateTime PurchaseDate { get; set; }
+        [Required(ErrorMessage = "Warranty Expiry Date is required.")]
+        [PurchaseDateValidation(ErrorMessage = "Purchase date can't be in the future.")]
+        public DateTime PurchaseDate { get; set; } = DateTime.Now;
 
         [DataType(DataType.Date)]
         [Required(ErrorMessage = "Warranty Expiry Date is required.")]
