@@ -26,7 +26,7 @@ namespace Asset_Manager.Models
         [ValidateNever]
         public Branch Branch { get; set; } = null!;
 
-        public string AssetTag { get; set; } = string.Empty;
+        //public string AssetTag { get; set; } = string.Empty;
 
         public DateTime AssginedDate { get; set; }= DateTime.Now;
         public DateTime? ReturnDate { get; set; }

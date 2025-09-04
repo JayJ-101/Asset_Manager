@@ -12,13 +12,14 @@
         public IEnumerable<Branch> Branches { get; set; } = new List<Branch>();
         public IEnumerable<string> Statuses { get; set; } = new List<string>
         {
-            "Available", "In Use", "Under Maintenance" ,"Decomissioned"
+            "Available", "Under Maintenance" ,"Decomissioned"
         };
 
-
+        //Counters 
         public int TotalAssets => Assets.Count();
         public int AvailableCount => Assets.Count(a => a.Status == "Available");
         public int MaintenanceCount => Assets.Count(a => a.Status == "Under Maintenance");
         public int AssignedCount => Assets.Count(a => a.Status == "Assigned");
+        public int DecomissionedCount => Assets.Count(a => a.Status == "Decomissioned");
     }
 }

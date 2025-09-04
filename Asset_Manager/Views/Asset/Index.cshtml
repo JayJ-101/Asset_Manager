@@ -24,6 +24,10 @@
                 <small>Maintenance</small>
                 <div class="h5 mb-0 text-white badge bg-warning">@Model.MaintenanceCount</div>
             </div>
+            <div class="text-muted">
+                <small>Decomissioned</small>
+                <div class="h5 mb-0 text-white badge bg-danger">@Model.DecomissionedCount</div>
+            </div>
         </div>
     </div>
     
@@ -145,7 +149,7 @@
                     }
                     else if (asset.Status == "Under Maintenance")
                     {
-                        <span class="badge bg-warning text-dark">@asset.Status</span>
+                        <span class="badge bg-danger text-dark">@asset.Status</span>
                     }
                     else
                     {

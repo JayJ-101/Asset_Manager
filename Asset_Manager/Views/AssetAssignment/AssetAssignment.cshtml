@@ -32,7 +32,6 @@
                 else
                 {
                     <div class="row mb-2">
-                        <label class="col-form-label col-md-2">Asset:</label>
                         <div class="col-md-4">
                             <select asp-for="AssetAssignment.AssetId" class="form-select"
                                     asp-items='@new SelectList(Model.Assets, "AssetId", "AssetName")'>
@@ -73,7 +72,7 @@
                 <span asp-validation-for="AssetAssignment.DepartmentId" class="text-danger"></span>
             </div>
         </div>
-        <div class="row mb-2">
+       @*  <div class="row mb-2">
             <label asp-for="AssetAssignment.AssetTag" class="col-form-label col-md-2">Asset Tag:</label>
             <div class="col-md-4">
                 <input type="text" asp-for="AssetAssignment.AssetTag" class="form-control" />
@@ -81,7 +80,7 @@
             <div class="col">
                 <span asp-validation-for="AssetAssignment.AssetTag" class="text-danger"></span>
             </div>
-        </div>
+        </div> *@
         <div class="row mb-2">
             <label asp-for="AssetAssignment.Employee" class="col-form-label col-md-2">Employee:</label>
             <div class="col-md-4">

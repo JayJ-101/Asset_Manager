@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Asset_Manager.Models;
 using System.Linq;
 
@@ -27,8 +26,9 @@ public class AssetAssignmentController : Controller
             OrderByDirection = values.SortDirection,
             PageNumber = values.PageNumber,
             PageSize = values.PageSize,
+            Where = a => a.ReturnDate == null   // <-- Only active assignments
         };
-    
+
         if (values.IsSortByBranch)
         {
             options.OrderBy = a => a.BranchId;
@@ -36,16 +36,17 @@ public class AssetAssignmentController : Controller
 
         if (values.DepartmentId.HasValue)
         {
-            options.Where = a => a.DepartmentId == values.DepartmentId;
+            options.Where = a => a.DepartmentId == values.DepartmentId && a.ReturnDate == null;
         }
+
         if (values.BranchId.HasValue)
         {
-            options.Where = a => a.BranchId == values.BranchId;
+            options.Where = a => a.BranchId == values.BranchId && a.ReturnDate == null;
         }
 
         if (!string.IsNullOrEmpty(values.SearchQuery))
         {
-            options.Where = a => a.Employee.Contains(values.SearchQuery);
+            options.Where = a => a.Employee.Contains(values.SearchQuery) && a.ReturnDate == null;
         }
 
         var vm = new AssignListViewModel
@@ -55,10 +56,13 @@ public class AssetAssignmentController : Controller
             TotalPages = values.GetTotalPages(assignData.Count),
             Branches = branchData.List(new QueryOptions<Branch> { OrderBy = b => b.BranchName }),
             Departments = departmentData.List(new QueryOptions<Department> { OrderBy = b => b.DepartmentName }),
+            Asset = assetData.List(new QueryOptions<Asset>())
         };
 
         return View(vm);
     }
+
+
 
 
     [HttpGet]
