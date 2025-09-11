@@ -33,9 +33,7 @@
             </div>
     </div>
 
- @*    <a asp-action="Add" class="btn btn-outline-success">
-        <i class="bi bi-plus-lg"></i> + Assign Asset
-    </a> *@
+
 </div>
 
 
@@ -53,8 +51,10 @@
                 <option value="">All</option>
                 @foreach (var branch in Model.Branches)
                 {
-                    var selected = branch.BranchId == current.BranchId ? "selected" : "";
-                    @:<option value="@branch.BranchId" @selected>@branch.BranchName</option>
+                    <option value="@branch.BranchId"
+                            selected="@(branch.BranchId == Model.CurrentRoute.BranchId)">
+                        @branch.BranchName
+                    </option>
                 }
             </select>
         </div>
@@ -65,21 +65,18 @@
                 <option value="">All</option>
                 @foreach (var dept in Model.Departments)
                 {
-                    var selected = dept.DepartmentId == current.DepartmentId ? "selected" : "";
-                    @:<option value="@dept.DepartmentId" @selected>@dept.DepartmentName</option>
+                    <option value="@dept.DepartmentId"
+                            selected="@(dept.DepartmentId == Model.CurrentRoute.DepartmentId)">
+                        @dept.DepartmentName
+                    </option>
                 }
             </select>
         </div>
 
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary mt-2">Apply Filters</button>
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary mt-2">Apply</button>
         </div>
 
-      @*   <div class="col-md-3 text-end">
-            <a asp-action="Add" class="btn btn-outline-success">
-                <strong>+ Assign Asset</strong>
-            </a>
-        </div> *@
     </div>
 </form>
 
@@ -184,7 +181,7 @@
         <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
     }
 </div>
-@* 
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -192,7 +189,7 @@
                 var branchId = $(this).val();
                 $('#DepartmentId').html('<option>Loading...</option>');
 
-                $.get('/Department/GetByBranch', { branchId: branchId }, function (data) {
+                $.get('/AssetAssignment/GetByBranch', { branchId: branchId }, function (data) {
                     var options = '<option value="">All</option>';
                     $.each(data, function (i, dept) {
                         options += `<option value="${dept.id}">${dept.name}</option>`;
@@ -200,11 +197,6 @@
                     $('#DepartmentId').html(options);
                 });
             });
-
-            $('.select2').select2({
-                placeholder: "Select...",
-                width: '100%'
-            });
         });
     </script>
-} *@
+}
