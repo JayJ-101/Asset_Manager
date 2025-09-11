@@ -2,11 +2,10 @@
 
 @{
     var action = ViewContext.RouteData.Values["action"]?.ToString()?.Capitalize() ?? "Add";
-    ViewData["Title"] = $" | {action} Maintenance Log";
+    ViewData["Title"] = $"  {action} Maintenance Log";
     var isDelete = action.EqualsNoCase("delete");
 }
 
-<h2 class="mb-4">@action Maintenance Log</h2>
 
 <form asp-action="@action" method="post">
     <input type="hidden" asp-for="MaintenanceLog.MaintenanceId" />

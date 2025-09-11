@@ -9,7 +9,28 @@
 @* <h2 class="mb-4">Maintenance Logs</h2> *@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Maintenance Logs</h2>
+  @*   <div class="d-flex gap-3">
+            <div class="text-muted">
+                <small>Total</small>
+                <div class="h5 mb-0 badge bg-primary">@Model.TotalAssets</div>
+            </div>
+            <div class="text-muted">
+                <small>Available</small>
+                <div class="h5 mb-0 text-white badge bg-success">@Model.AvailableCount</div>
+            </div>
+            <div class="text-muted">
+                <small>Assigned</small>
+                <div class="h5 mb-0 text-white badge bg-info">@Model.AssignedCount</div>
+            </div>
+            <div class="text-muted">
+                <small>Maintenance</small>
+                <div class="h5 mb-0 text-white badge bg-warning">@Model.MaintenanceCount</div>
+            </div>
+            <div class="text-muted">
+                <small>Decomissioned</small>
+                <div class="h5 mb-0 text-white badge bg-danger">@Model.DecomissionedCount</div>
+            </div>
+        </div> *@
     <a asp-action="Add" class="btn btn-outline-success">
         <i class="bi bi-plus-lg"></i> + Log Maintenance
     </a>

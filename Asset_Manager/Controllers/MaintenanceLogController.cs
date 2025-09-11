@@ -17,55 +17,7 @@ namespace Asset_Manager.Controllers
             assetData = new Repository<Asset>(ctx);
         }
 
-        public IActionResult Dashboard()
-        {
-            var now = DateTime.Now;
-            var thirtyDaysAgo = now.AddDays(-30);
-
-            // Get all relevant data
-            var maintenanceLogs = logData.List(new QueryOptions<MaintenanceLog>
-            {
-                Includes = "Asset"
-            });
-
-            var assets = assetData.List(new QueryOptions<Asset>());
-
-            var vm = new MaintenanceDashboardVM
-            {
-                // Maintenance-specific metrics
-                PendingCount = maintenanceLogs.Count(m => m.Status == "Pending"),
-                InProgressCount = maintenanceLogs.Count(m => m.Status == "In Maintenance"),
-                MaintenanceCompletedToday = maintenanceLogs.Count(m =>
-                    m.Status == "Completed" &&
-                    m.CompletionDate?.Date == now.Date),
-
-                // Asset status metrics
-                TotalAssets = assets.Count(),
-                AssetsUnderMaintenance = assets.Count(a => a.Status == "In Maintenance"),
-                AvailableAssets = assets.Count(a => a.Status == "Available"),
-
-                // Overdue maintenance
-                OverdueMaintenance = maintenanceLogs
-                    .Where(m => m.Status == "Pending" && m.LoggedDate < now.AddDays(-7))
-                    .ToList(),
-
-                // Recent maintenance activities
-                RecentActivities = maintenanceLogs
-                    .OrderByDescending(m => m.LoggedDate)
-                    .Take(5)
-                    .Select(m => new MaintenanceActivityVM
-                    {
-                        AssetName = m.Asset?.AssetName ?? "Unknown Asset",
-                        Description = m.Description,
-                        Status = m.Status,
-                        Date = m.LoggedDate,
-                        Technician = m.Tecnician
-                    })
-                    .ToList()
-            };
-
-            return View(vm);
-        }
+      
 
 
         public IActionResult Index(MaintenanceGriData values)
@@ -132,7 +84,11 @@ namespace Asset_Manager.Controllers
         {
             var vm = new MaintenanceLogViewModel
             {
-                Assets = assetData.List(new QueryOptions<Asset> { OrderBy = a => a.AssetName })
+                Assets = assetData.List(new QueryOptions<Asset> {
+                    Where = a => a.Status == "Available",
+                    OrderBy = a => a.AssetName 
+                })
+
             };
             return View("MaintenanceLog", vm);
         }
@@ -143,7 +99,11 @@ namespace Asset_Manager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                vm.Assets = assetData.List(new QueryOptions<Asset> { OrderBy = a => a.AssetName });
+                vm.Assets = assetData.List(new QueryOptions<Asset> {
+                    Where = a => a.Status == "Available",
+                    OrderBy = a => a.AssetName 
+                });
+
                 return View("MaintenanceLog", vm);
             }
 
