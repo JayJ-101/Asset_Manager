@@ -62,7 +62,7 @@ namespace Asset_Manager.Controllers
                     OrderBy = c => c.CategoryName
                 }),
                 
-                Statuses = new List<string> { "Available", "In Use", "Under Maintenance", "Decomissioned" }
+                Statuses = new List<string> { "Available", "Assigned", "Under Maintenance", "Decomissioned" }
 
 
 

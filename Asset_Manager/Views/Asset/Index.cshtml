@@ -5,191 +5,254 @@
     var routes = current.Clone();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <div class="d-flex gap-3">
-            <div class="text-muted">
-                <small>Total</small>
-                <div class="h5 mb-0 badge bg-primary">@Model.TotalAssets</div>
-            </div>
-            <div class="text-muted">
-                <small>Available</small>
-                <div class="h5 mb-0 text-white badge bg-success">@Model.AvailableCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Assigned</small>
-                <div class="h5 mb-0 text-white badge bg-info">@Model.AssignedCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Maintenance</small>
-                <div class="h5 mb-0 text-white badge bg-warning">@Model.MaintenanceCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Decomissioned</small>
-                <div class="h5 mb-0 text-white badge bg-danger">@Model.DecomissionedCount</div>
-            </div>
-        </div>
-    </div>
+<div class="container-fluid px-4">
     
-    <div>
-        <a asp-action="Add" class="btn btn-outline-success">
-            <i class="bi bi-plus-lg"></i> Add Asset
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0"></h2>
+        <a asp-action="Add" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Assign Asset
         </a>
     </div>
+
+     <!-- Stats Cards -->
+     <div class="row mb-4">
+         <div class="col-xl-3 col-md-6">
+             <div class="card bg-primary text-white mb-4">
+                 <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                              <div class="text-xs font-weight-bold text-uppercase mb-1">Total Assets</div>
+                            <div class="h5 mb-0">@Model.TotalAssets</div>
+                          </div> 
+                            <i class="fas fa-clipboard-list fa-2x text-white-50"></i>
+                      </div>
+                    
+                 </div>
+             </div>
+         </div>
+         <div class="col-xl-3 col-md-6">
+             <div class="card bg-success text-white mb-4">
+                 <div class="card-body">
+                     <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                           <div class="text-xs font-weight-bold text-uppercase mb-1">Available Assets</div>
+                            <div class="h5 mb-0">@Model.AvailableCount</div>
+                        </div>
+                         <i class="fas fa-clipboard-list fa-2x text-white-50"></i>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="col-xl-3 col-md-6">
+             <div class="card bg-warning text-dark mb-4">
+                 <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                               <div class="text-xs font-weight-bold text-uppercase mb-1">Under Maintenance</div>
+                            <div class="h5 mb-0">@Model.MaintenanceCount</div>
+                          </div>
+                          <i class="fas fa-tools fa-2x text-dark-50"></i>
+                      </div>   
+                 </div>
+             </div>
+         </div>
+          <div class="col-xl-3 col-md-6">
+             <div class="card bg-danger text-dark mb-4">
+                 <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                               <div class="text-xs font-weight-bold text-uppercase mb-1">Decomissioned</div>
+                            <div class="h5 mb-0">@Model.DecomissionedCount</div>
+                          </div>
+                          <i class="fas fa-circle-xmark fa-2x text-dark-50"></i>
+                      </div>
+                      
+                 </div>
+             </div>
+         </div>
+     </div>
+       
+</div>
+
+<!--Filter Card-->
+<div class="card mb-4">
+     <div class="card-header">
+            <i class="fas fa-filter me-1"></i>
+            Filters
+     </div>
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <!-- Search -->
+                <div class="col-md-6">
+                    <label for="SearchQuery" class="form-label">Search</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
+                           value="@current.SearchQuery" placeholder="Search by name, model, or serial" />
+                    </div>
+
+                    
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-2">
+                    <label for="CategoryId" class="form-label">Category</label>
+                    <select id="CategoryId" name="CategoryId" class="form-select">
+                        <option value="">All</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            var selected = category.CategoryId == current.CategoryId ? "selected" : "";
+                            @:<option value="@category.CategoryId" @selected>@category.CategoryName</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-2">
+                    <label for="Status" class="form-label">Status</label>
+                    <select id="Status" name="Status" class="form-select">
+                        <option value="">All</option>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            var selected = status == current.Status ? "selected" : "";
+                            @:<option value="@status" @selected>@status</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Apply Button -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
 </div>
 
 
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row g-3 align-items-end">
-        <!-- Search -->
-        <div class="col-md-3">
-            <label for="SearchQuery" class="form-label">Search</label>
-            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
-                   value="@current.SearchQuery" placeholder="Search by name, model, or serial" />
-        </div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        Asset Inventory
+    </div>
 
-        <!-- Category -->
-        <div class="col-md-2">
-            <label for="CategoryId" class="form-label">Category</label>
-            <select id="CategoryId" name="CategoryId" class="form-select">
-                <option value="">All</option>
-                @foreach (var category in Model.Categories)
+    <div class="card-body">
+        <div class="table-responsive-sm">
+            
+        <table class="table table-bordered table-striped table-hover table-sm">
+            <thead class="table-dark text-white">
+                <tr>
+                    <th>
+                        @{
+                            routes.SetSortAndDirection(nameof(Asset.Manufacturer), current);
+                        }
+                        <a asp-action="Index"
+                           asp-all-route-data="@routes.ToDictionary()"
+                           class="text-white text-decoration-none">Manufacturer</a>
+                    </th>
+                    <th>
+                        @{
+                            routes.SetSortAndDirection(nameof(Asset.Model), current);
+                        }
+                        <a asp-action="Index"
+                           asp-all-route-data="@routes.ToDictionary()"
+                           class="text-white text-decoration-none">Model</a>
+                    </th>
+                    <th>
+                        @{
+                            routes.SetSortAndDirection(nameof(Asset.AssetName), current);
+                        }
+                        <a asp-action="Index"
+                           asp-all-route-data="@routes.ToDictionary()"
+                           class="text-white text-decoration-none">Asset Tag</a>
+                    </th>
+                    <th>
+                        @{
+                            routes.SetSortAndDirection(nameof(Asset.SerialNumber), current);
+                        }
+                        <a asp-action="Index"
+                           asp-all-route-data="@routes.ToDictionary()"
+                           class="text-white text-decoration-none">Serial Number</a>
+                    </th>
+                    <th>Supplier</th>
+                    <th>Category</th>
+                    <th>
+                        @{
+                            routes.SetSortAndDirection(nameof(Asset.Status), current);
+                        }
+                        <a asp-action="Index"
+                           asp-all-route-data="@routes.ToDictionary()"
+                           class="text-white text-decoration-none">Status</a>
+                    </th>
+                    <th>Purchase Date</th>
+                    <th>Warranty Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var asset in Model.Assets)
                 {
-                    var selected = category.CategoryId == current.CategoryId ? "selected" : "";
-                    @:<option value="@category.CategoryId" @selected>@category.CategoryName</option>
+                    <tr>
+                        <td>@asset.Manufacturer</td>
+                        <td>@asset.Model</td>
+                        <td>@asset.AssetName</td>
+                        <td>@asset.SerialNumber</td>
+                        <td>@asset.Supplier?.SupplierName</td>
+                        <td>@asset.Category?.CategoryName</td>
+                        <td>
+                            @if (asset.Status == "Available")
+                            {
+                                <span class="badge bg-success">@asset.Status</span>
+                            }
+                            else if (asset.Status == "Under Maintenance")
+                            {
+                                <span class="badge bg-warning">@asset.Status</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@asset.Status</span>
+                            }
+                        </td>
+                        <td>@asset.PurchaseDate.ToShortDateString()</td>
+                        <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AssetAssignment" asp-action="Add" asp-route-assetId="@asset.AssetId">Assign</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@asset.AssetId">Details</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@asset.AssetId">Edit</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@asset.AssetId">Delete</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
                 }
-            </select>
-        </div>
+            </tbody>
+        </table>
 
-        <!-- Status -->
-        <div class="col-md-2">
-            <label for="Status" class="form-label">Status</label>
-            <select id="Status" name="Status" class="form-select">
-                <option value="">All</option>
-                @foreach (var status in Model.Statuses)
-                {
-                    var selected = status == current.Status ? "selected" : "";
-                    @:<option value="@status" @selected>@status</option>
-                }
-            </select>
+        <!-- Paging -->
+        <div>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                routes.PageNumber = i;
+                string active = Nav.Active(i, current.PageNumber);
+                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
+            }
         </div>
-
-        <!-- Apply Button -->
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
         </div>
     </div>
-</form>
-
-<table class="table table-bordered table-striped table-hover table-sm">
-    <thead class="table-dark text-white">
-        <tr>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.Manufacturer), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Manufacturer</a>
-            </th>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.Model), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Model</a>
-            </th>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.AssetName), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Asset Tag</a>
-            </th>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.SerialNumber), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Serial Number</a>
-            </th>
-            <th>Supplier</th>
-            <th>Category</th>
-            <th>
-                @{
-                    routes.SetSortAndDirection(nameof(Asset.Status), current);
-                }
-                <a asp-action="Index"
-                   asp-all-route-data="@routes.ToDictionary()"
-                   class="text-white text-decoration-none">Status</a>
-            </th>
-            <th>Purchase Date</th>
-            <th>Warranty Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var asset in Model.Assets)
-        {
-            <tr>
-                <td>@asset.Manufacturer</td>
-                <td>@asset.Model</td>
-                <td>@asset.AssetName</td>
-                <td>@asset.SerialNumber</td>
-                <td>@asset.Supplier?.SupplierName</td>
-                <td>@asset.Category?.CategoryName</td>
-                <td>
-                    @if (asset.Status == "Available")
-                    {
-                        <span class="badge bg-success">@asset.Status</span>
-                    }
-                    else if (asset.Status == "Under Maintenance")
-                    {
-                        <span class="badge bg-danger text-dark">@asset.Status</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">@asset.Status</span>
-                    }
-                </td>
-                <td>@asset.PurchaseDate.ToShortDateString()</td>
-                <td>@asset.WarrantyExpiryDate.ToShortDateString()</td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Actions
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" asp-controller="AssetAssignment" asp-action="Add" asp-route-assetId="@asset.AssetId">Assign</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" asp-action="Details" asp-route-id="@asset.AssetId">Details</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" asp-action="Edit" asp-route-id="@asset.AssetId">Edit</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@asset.AssetId">Delete</a>
-                            </li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Paging -->
-<div>
-    @for (int i = 1; i <= Model.TotalPages; i++)
-    {
-        routes.PageNumber = i;
-        string active = Nav.Active(i, current.PageNumber);
-        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
-    }
 </div>

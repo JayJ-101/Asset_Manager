@@ -6,138 +6,203 @@
     var routes = current.Clone();
 }
 
-@* <h2 class="mb-4">Maintenance Logs</h2> *@
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-  @*   <div class="d-flex gap-3">
-            <div class="text-muted">
-                <small>Total</small>
-                <div class="h5 mb-0 badge bg-primary">@Model.TotalAssets</div>
-            </div>
-            <div class="text-muted">
-                <small>Available</small>
-                <div class="h5 mb-0 text-white badge bg-success">@Model.AvailableCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Assigned</small>
-                <div class="h5 mb-0 text-white badge bg-info">@Model.AssignedCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Maintenance</small>
-                <div class="h5 mb-0 text-white badge bg-warning">@Model.MaintenanceCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Decomissioned</small>
-                <div class="h5 mb-0 text-white badge bg-danger">@Model.DecomissionedCount</div>
-            </div>
-        </div> *@
-    <a asp-action="Add" class="btn btn-outline-success">
-        <i class="bi bi-plus-lg"></i> + Log Maintenance
-    </a>
-</div>
-
-
-<!-- Filter Form -->
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row g-3 align-items-end">
-        <div class="col-md-3">
-            <label for="SearchQuery" class="form-label">Search by Asset Name</label>
-            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
-                   value="@current.SearchQuery" placeholder="Enter asset name..." />
-        </div>
-
-        <div class="col-md-2">
-            <label for="Status" class="form-label">Status</label>
-            <select id="Status" name="Status" class="form-select">
-                <option value="">All</option>
-                @foreach (var status in Model.Statuses)
-                {
-                    var selected = status == current.Status ? "selected" : "";
-                    @:<option value="@status" @selected>@status</option>
-                }
-            </select>
-        </div>
-
-        <div class="col-md-3 text-end">
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
-        </div>
-
-       @*  <div class="col-md-4 text-end">
-            <a asp-action="Add" class="btn btn-success">+ Log Maintenance</a>
-        </div> *@
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"></h2>
+        <a asp-action="Add" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Log Maintenance
+        </a>
     </div>
-</form>
 
-<!-- Table -->
-<table class="table table-bordered table-striped table-hover table-sm">
-    <thead class="table-dark text-white">
-        <tr>
-            <th>
-                @{ routes.SetSortAndDirection(nameof(MaintenanceLog.AssetId), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Asset
-                </a>
-            </th>
-            <th>
-                Technician
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Logged
-            </th>
-            <th>
-                Completion
-            </th>
-            <th>
-                Status
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var log in Model.MaintenanceLogs)
-        {
-            <tr>
-                <td>@log.Asset?.AssetName</td>
-                <td>@log.Tecnician</td>
-                <td>@log.Description</td>
-                <td>@log.LoggedDate.ToShortDateString()</td>
-                <td>@(log.CompletionDate?.ToShortDateString() ?? "—")</td>
-                <td>
-                    @if (log.Status == "Completed")
-                    {
-                        <span class="badge bg-success">@log.Status</span>
-                    }
-                    else if (log.Status == "In Progress")
-                    {
-                        <span class="badge bg-warning text-dark">@log.Status</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">@log.Status</span>
-                    }
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <a asp-action="Edit" asp-route-id="@log.MaintenanceId" class="btn btn-sm btn-outline-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@log.MaintenanceId" class="btn btn-sm btn-outline-danger">Delete</a>
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total assets</div>
+                            <div class="h5 mb-0">@Model.TotalAssets</div>
+                        </div>
+                        <i class="fas fa-clipboard-list fa-2x text-white-50"></i>
                     </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Pending</div>
+                            <div class="h5 mb-0">@Model.Pending</div>
+                        </div>
+                        <i class="fas fa-clock fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Completed</div>
+                            <div class="h5 mb-0">@Model.CompletedCount</div>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-dark mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">In Progress</div>
+                            <div class="h5 mb-0">@Model.ProgressCount</div>
+                        </div>
+                        <i class="fas fa-tools fa-2x text-dark-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Paging -->
-<div>
-    @for (int i = 1; i <= Model.TotalPages; i++)
-    {
-        routes.PageNumber = i;
-        string active = Nav.Active(i, current.PageNumber);
-        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()"
-           class="btn btn-outline-primary mb-2 @active">@i</a>
-    }
+    <!-- Filter Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-filter me-1"></i>
+            Filters
+        </div>
+        <div class="card-body">
+            <form asp-action="Index" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label for="SearchQuery" class="form-label">Search</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
+                                   value="@current.SearchQuery" placeholder="Search by asset name..." />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="Status" class="form-label">Status</label>
+                        <select id="Status" name="Status" class="form-select">
+                            <option value="">All Statuses</option>
+                            @foreach (var status in Model.Statuses)
+                            {
+                                var selected = status == current.Status ? "selected" : "";
+                                <option value="@status" @@selected>@status</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-1"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Maintenance Logs
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>
+                                @{ routes.SetSortAndDirection(nameof(MaintenanceLog.AssetId), current); }
+                                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                    <i class="fas fa-laptop me-1"></i> Asset
+                                </a>
+                            </th>
+                            <th><i class="fas fa-user me-1"></i> Technician</th>
+                            <th><i class="fas fa-align-left me-1"></i> Description</th>
+                            <th><i class="fas fa-calendar-plus me-1"></i> Logged</th>
+                            <th><i class="fas fa-calendar-check me-1"></i> Completion</th>
+                            <th><i class="fas fa-status me-1"></i> Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.MaintenanceLogs)
+                        {
+                            <tr>
+                                <td class="fw-bold">@log.Asset?.AssetName</td>
+                                <td>@log.Tecnician</td>
+                                <td class="text-truncate" style="max-width: 200px;" title="@log.Description">
+                                    @log.Description
+                                </td>
+                                <td>@log.LoggedDate.ToString("MMM dd, yyyy")</td>
+                                <td>@(log.CompletionDate?.ToString("MMM dd, yyyy") ?? "—")</td>
+                                <td>
+                                    @if (log.Status == "Completed")
+                                    {
+                                        <span class="badge bg-success rounded-pill p-2">
+                                            <i class="fas fa-check-circle me-1"></i> @log.Status
+                                        </span>
+                                    }
+                                    else if (log.Status == "In Progress")
+                                    {
+                                        <span class="badge bg-warning text-dark rounded-pill p-2">
+                                            <i class="fas fa-spinner me-1"></i> @log.Status
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill p-2">
+                                            <i class="fas fa-clock me-1"></i> @log.Status
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@log.MaintenanceId" 
+                                           class="btn btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@log.MaintenanceId" 
+                                           class="btn btn-outline-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            routes.PageNumber = i;
+                            <li class="page-item @(i == current.PageNumber ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-all-route-data="@routes.ToDictionary()">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
 </div>
+
+<style>
+    
+</style>

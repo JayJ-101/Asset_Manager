@@ -3,6 +3,9 @@
     public class MaintenanceLogListVM
     {
         public IEnumerable<MaintenanceLog> MaintenanceLogs { get; set; } = new List<MaintenanceLog>();
+        public IEnumerable<Asset> Assets { get; set; } = new List<Asset>();
+
+
         public MaintenanceGriData CurrentRoute { get; set; } = new MaintenanceGriData();
         public int TotalPages { get; set; }
 
@@ -10,5 +13,12 @@
         {
            "Pending", "Completed", "In Progress"
         };
+
+        //Counters 
+        public int TotalAssets => Assets.Count();
+        public int Pending => MaintenanceLogs.Count(a => a.Status == "Pending");
+        public int CompletedCount => MaintenanceLogs.Count(a => a.Status == "Completed");
+        public int ProgressCount => MaintenanceLogs.Count(a => a.Status == "In Progress");
+        
     }
 }

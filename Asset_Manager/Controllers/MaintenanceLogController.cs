@@ -56,7 +56,8 @@ namespace Asset_Manager.Controllers
                 MaintenanceLogs = logData.List(options),
                 CurrentRoute = values,
                 TotalPages = values.GetTotalPages(logData.Count),
-                Statuses = new List<string> { "Pending", "Completed", "In Progress" }
+                Statuses = new List<string> { "Pending", "Completed", "In Progress" },
+                Assets = assetData.List(new QueryOptions<Asset>())
             };
 
             return View(vm);
