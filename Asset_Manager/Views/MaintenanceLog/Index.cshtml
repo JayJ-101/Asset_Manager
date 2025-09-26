@@ -1,7 +1,7 @@
 ﻿@model MaintenanceLogListVM
 
 @{
-    ViewData["Title"] = "Maintenance Logs";
+    ViewData["Title"] = "Maintenance Log";
     var current = Model.CurrentRoute;
     var routes = current.Clone();
 }
@@ -29,6 +29,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
             <div class="card bg-success text-white mb-4">
                 <div class="card-body">
@@ -42,6 +43,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
             <div class="card bg-info text-white mb-4">
                 <div class="card-body">
@@ -55,6 +57,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
             <div class="card bg-warning text-dark mb-4">
                 <div class="card-body">
@@ -176,6 +179,15 @@
                                            class="btn btn-outline-danger" title="Delete">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        @if (log.Status != "Completed")
+                                        {
+                                            <form asp-action="Complete" asp-route-id="@log.MaintenanceId" method="post" class="d-inline">
+                                                <a asp-action="CompleteMaintenance" asp-route-id="@log.MaintenanceId"
+                                                   class="btn btn-outline-success" title="Complete">
+                                                    <i class="fas fa-check"></i>
+                                                </a>
+                                            </form>
+                                        }
                                     </div>
                                 </td>
                             </tr>
@@ -202,7 +214,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    
-</style>

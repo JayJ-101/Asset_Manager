@@ -33,154 +33,201 @@
             </div>
     </div>
 
-
-</div>
-
-
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row g-3 align-items-end">
-        <div class="col-md-3">
-            <label for="SearchQuery" class="form-label">Search by Employee</label>
-            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
-                   value="@current.SearchQuery" placeholder="Enter employee name" />
-        </div>
-
-        <div class="col-md-2">
-            <label for="BranchId" class="form-label">Branch</label>
-            <select id="BranchId" name="BranchId" class="form-select">
-                <option value="">All</option>
-                @foreach (var branch in Model.Branches)
-                {
-                    <option value="@branch.BranchId"
-                            selected="@(branch.BranchId == Model.CurrentRoute.BranchId)">
-                        @branch.BranchName
-                    </option>
-                }
-            </select>
-        </div>
-
-        <div class="col-md-2">
-            <label for="DepartmentId" class="form-label">Department</label>
-            <select id="DepartmentId" name="DepartmentId" class="form-select">
-                <option value="">All</option>
-                @foreach (var dept in Model.Departments)
-                {
-                    <option value="@dept.DepartmentId"
-                            selected="@(dept.DepartmentId == Model.CurrentRoute.DepartmentId)">
-                        @dept.DepartmentName
-                    </option>
-                }
-            </select>
-        </div>
-
-        <div class="col-md-2 align-self-end">
-            <button type="submit" class="btn btn-primary mt-2">Apply</button>
-        </div>
-
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0"></h2>
+        <a asp-action="Add" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Create Maintance
+        </a>
     </div>
-</form>
-
-<table class="table table-bordered table-striped table-hover table-sm">
-    <thead class="table-dark text-white">
-        <tr>
-            @* Asset Tag *@
-            <th>
-                @{ routes.SetSortAndDirection(nameof(AssetAssignment.Asset.AssetName), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Asset Tag
-                </a>
-            </th>
-
-            @* Employee *@
-            <th>
-                @{ routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Employee
-                </a>
-            </th>
-
-            @* Branch *@
-            <th>
-                @{ routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Branch
-                </a>
-            </th>
-
-            @* Department *@
-            <th>
-                @{ routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Department
-                </a>
-            </th>
-
-            @* Assigned Date *@
-            <th>
-                @{ routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Assigned Date
-                </a>
-            </th>
-
-            @* Return Date *@
-            <th>
-                @{ routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current); }
-                <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                    Return Date
-                </a>
-            </th>
-
-            <th>Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var assignment in Model.Assign)
-        {
-            <tr>
-                <td>@assignment.Asset.AssetName</td>
-                <td>@assignment.Employee</td>
-                <td>@assignment.Branch?.BranchName</td>
-                <td>@assignment.Department?.DepartmentName</td>
-                <td>@assignment.AssginedDate.ToShortDateString()</td>
-                <td>
-                    @(assignment.ReturnDate?.ToShortDateString() ?? "Not Returned")
-                </td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            Actions
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId" class="dropdown-item text-warning">
-                                    Return
-                                </a>
-                            </li>
-                            <li>
-                                <form asp-action="Select" method="post">
-                                    <input type="hidden" name="id" value="@assignment.AssingmentId" />
-                                    <button type="submit" name="operation" value="edit" class="dropdown-item text-primary">Edit</button>
-                                    <button type="submit" name="operation" value="delete" class="dropdown-item text-danger">Delete</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div>
-    @for (int i = 1; i <= Model.TotalPages; i++)
-    {
-        routes.PageNumber = i;
-        string active = Nav.Active(i, current.PageNumber);
-        <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
-    }
 </div>
+
+
+<!--Filter Card-->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-filter me-1"></i>
+        Filters
+    </div>
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <!-- Search -->
+                <div class="col-md-6">
+                    <label for="SearchQuery" class="form-label">Search</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
+                               value="@current.SearchQuery" placeholder="Search by employee name" />
+                    </div>
+                </div>
+
+                <!--Branch Dropdown-->
+                <div class="col-md-2">
+                    <label for="BranchId" class="form-label">Branch</label>
+                    <select id="BranchId" name="BranchId" class="form-select">
+                        <option value="">All</option>
+                        @foreach (var branch in Model.Branches)
+                        {
+                            <option value="@branch.BranchId"
+                                    selected="@(branch.BranchId == Model.CurrentRoute.BranchId)">
+                                @branch.BranchName
+                            </option>
+                        }
+                    </select>
+                </div>
+                <!--Department Dropdown-->
+                <div class="col-md-2">
+                    <label for="DepartmentId" class="form-label">Department</label>
+                    <select id="DepartmentId" name="DepartmentId" class="form-select">
+                        <option value="">All</option>
+                        @foreach (var dept in Model.Departments)
+                        {
+                            <option value="@dept.DepartmentId"
+                                    selected="@(dept.DepartmentId == Model.CurrentRoute.DepartmentId)">
+                                @dept.DepartmentName
+                            </option>
+                        }
+                    </select>
+                </div>
+                
+                <!-- Apply Button -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+       Assigned Assets
+    </div>
+    <div class="card-body">
+        <div class="table-responsive-sm">
+
+            <table class="table table-bordered table-striped table-hover table-sm">
+                <thead class="table-dark text-white">
+                    <tr>
+                        @* Asset Tag *@
+                        <th>
+                            @{
+                                routes.SetSortAndDirection(nameof(AssetAssignment.Asset.AssetName), current);
+                            }
+                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                Asset Tag
+                            </a>
+                        </th>
+
+                        @* Employee *@
+                        <th>
+                            @{
+                                routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current);
+                            }
+                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                Employee
+                            </a>
+                        </th>
+
+                        @* Branch *@
+                        <th>
+                            @{
+                                routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current);
+                            }
+                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                Branch
+                            </a>
+                        </th>
+
+                        @* Department *@
+                        <th>
+                            @{
+                                routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current);
+                            }
+                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                Department
+                            </a>
+                        </th>
+
+                        @* Assigned Date *@
+                        <th>
+                            @{
+                                routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current);
+                            }
+                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                Assigned Date
+                            </a>
+                        </th>
+
+                        @* Return Date *@
+                        <th>
+                            @{
+                                routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current);
+                            }
+                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
+                                Return Date
+                            </a>
+                        </th>
+
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var assignment in Model.Assign)
+                    {
+                        <tr>
+                            <td>@assignment.Asset.AssetName</td>
+                            <td>@assignment.Employee</td>
+                            <td>@assignment.Branch?.BranchName</td>
+                            <td>@assignment.Department?.DepartmentName</td>
+                            <td>@assignment.AssginedDate.ToShortDateString()</td>
+                            <td>
+                                @(assignment.ReturnDate?.ToShortDateString() ?? "Not Returned")
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId" class="dropdown-item text-warning">
+                                                Return
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form asp-action="Select" method="post">
+                                                <input type="hidden" name="id" value="@assignment.AssingmentId" />
+                                                <button type="submit" name="operation" value="edit" class="dropdown-item text-primary">Edit</button>
+                                                <button type="submit" name="operation" value="delete" class="dropdown-item text-danger">Delete</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    routes.PageNumber = i;
+                    string active = Nav.Active(i, current.PageNumber);
+                    <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 @section Scripts {
     <script>

@@ -11,7 +11,7 @@
 
         public IEnumerable<string> Statuses { get; set; } = new List<string>
         {
-           "Pending", "Completed", "In Progress"
+           "Under Maintenance", "Completed", 
         };
 
         //Counters 

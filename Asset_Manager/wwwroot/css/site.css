@@ -79,3 +79,16 @@
 .page-link {
     color: #4e73df;
 }
+
+.centered-card {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .centered-card .card {
+        width: 100%;
+        max-width: 600px;
+        margin: 2rem auto;
+    }

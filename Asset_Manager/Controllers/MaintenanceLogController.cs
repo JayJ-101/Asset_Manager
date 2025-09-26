@@ -56,12 +56,33 @@ namespace Asset_Manager.Controllers
                 MaintenanceLogs = logData.List(options),
                 CurrentRoute = values,
                 TotalPages = values.GetTotalPages(logData.Count),
-                Statuses = new List<string> { "Pending", "Completed", "In Progress" },
+                Statuses = new List<string> { "Completed", "Under Maintenance" },
                 Assets = assetData.List(new QueryOptions<Asset>())
             };
 
             return View(vm);
         }
+
+        [HttpGet]
+        public IActionResult SearchAssets(string term)
+        {
+            var assets = assetData.List(new QueryOptions<Asset>
+            {
+                Where = a => string.IsNullOrEmpty(term) ||
+                             a.AssetName.Contains(term) ||
+                             a.SerialNumber.Contains(term) ||
+                             a.Manufacturer.Contains(term),
+                OrderBy = a => a.AssetName
+            });
+
+            var result = assets.Select(a => new {
+                id = a.AssetId,
+                text = $"{a.AssetName} ({a.SerialNumber}) - {a.Manufacturer}"
+            });
+
+            return Json(result);
+        }
+
 
         // select (posted from genre drop down on Index page). 
         [HttpPost]
@@ -131,10 +152,23 @@ namespace Asset_Manager.Controllers
 
 
         #region Completed Maintenance
+        [HttpGet]
+        public IActionResult CompleteMaintenance(int id)
+        {
+            var log = logData.Get(new QueryOptions<MaintenanceLog>
+            {
+                Includes = "Asset",
+                Where = l => l.MaintenanceId == id
+            });
+
+            if (log == null) return NotFound();
+
+            return View(log);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HttpPost]
-        public IActionResult Complete(int id, string assetStatus = "Available")
+        public IActionResult CompleteMaintenanceConfirmed(int id, string assetStatus = "Available")
         {
             var log = logData.Get(id);
             if (log == null) return NotFound();
@@ -153,7 +187,7 @@ namespace Asset_Manager.Controllers
             logData.Save();
             assetData.Save();
 
-            TempData["message"] = $"Maintenance completed. Asset status set to {assetStatus}.";
+            TempData["message"] = $"Maintenance completed. Asset status set to {assetStatus} to re-assign.";
             return RedirectToAction("Index");
         }
 
