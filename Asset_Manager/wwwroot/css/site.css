@@ -16,14 +16,115 @@
 }
 
 
-
-
-/* Sidebar hover consistency */
-.sidebar-nav .hover-light:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: .375rem;
-    transition: background-color 0.3s ease;
+/* --- TOP NAVBAR STYLING --- */
+.topbar {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
 }
+
+/* Search bar */
+.search-bar .input-group {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+    border: 1px solid #d8dee9;
+    transition: box-shadow 0.2s ease;
+}
+
+    .search-bar .input-group:focus-within {
+        box-shadow: 0 0 0 2px rgba(78, 115, 223, 0.3);
+    }
+
+/* User image */
+.topbar img {
+    border: 2px solid #e5e7eb;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(78, 115, 223, 0.12);
+}
+
+/* Mobile menu button */
+.topbar .btn {
+    border-radius: 8px;
+}
+/* Modern Sidebar */
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    backdrop-filter: blur(14px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Branding */
+.sidebar-header {
+    font-family: "Nerko One", sans-serif;
+}
+
+/* Main links */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    color: #f1f1f1;
+    font-size: 0.95rem;
+    border-radius: 0.35rem;
+    transition: 0.25s ease;
+}
+
+    .sidebar-link:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+    }
+
+    /* Active main item */
+    .sidebar-link.active {
+        background: rgba(255, 255, 255, 0.22);
+        font-weight: 600;
+        color: #fff;
+    }
+
+/* Submenu links */
+.submenu a.sub-link {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+    color: #dcdcdc;
+    border-radius: 0.35rem;
+    margin-left: 0.5rem;
+}
+
+.sub-link:hover {
+    background: rgba(255, 255, 255, 0.10);
+    color: #fff;
+}
+
+/* Active submenu link */
+.active-sub {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Smooth collapsible chevron */
+.chevron {
+    transition: transform 0.3s ease;
+}
+
+.sidebar-link[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+}
+
 
 /* Smooth dropdown */
 .submenu {

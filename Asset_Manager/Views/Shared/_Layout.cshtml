@@ -27,97 +27,137 @@
     @RenderSection("Styles", required: false)
 </head>
 <body class="d-flex min-vh-100 bg-light">
+    
     <!-- Sidebar -->
-    <nav id="sidebarMenu" class="d-flex flex-column flex-shrink-0 p-3 bg-primary text-white offcanvas-lg offcanvas-start" style="width: 250px; min-width: 250px;" tabindex="-1">
-        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-           asp-area="" asp-controller="Home" asp-action="Index">
-            <i class="fas fa-server me-2 fs-5"></i>
-            <span class="fs-5 fw-bold">Asset Manager</span>
-        </a>
-        <hr class="text-white opacity-25" />
+    <nav id="sidebarMenu"
+         class="sidebar d-flex flex-column p-3 text-white offcanvas-lg offcanvas-start bg-primary"
+         tabindex="-1">
 
-        <ul class="nav nav-pills flex-column mb-auto sidebar-nav">
-            <li class="nav-item">
-                <a class="nav-link d-flex align-items-center py-2 px-3 rounded
-                      @(current == "Home" ? "active bg-dark" : "text-white hover-light")"
+        <!-- Branding -->
+        <div class="sidebar-header d-flex align-items-center mb-4">
+            <i class="fas fa-server fs-4 me-2"></i>
+            <span class="fs-4 fw-bold">Asset Manager</span>
+        </div>
+
+        <!-- Navigation -->
+        <ul class="nav flex-column sidebar-nav">
+
+            <!-- Dashboard -->
+            <li class="nav-item mb-1">
+                <a class="nav-link sidebar-link @(current == "Home" ? "active" : "")"
                    asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-home me-2"></i> <span>Dashboard</span>
+                    <i class="fas fa-home me-3"></i>
+                    Dashboard
                 </a>
             </li>
 
-            <li>
-                <a class="nav-link d-flex justify-content-between align-items-center py-2 px-3 rounded
-                      @(current == "Asset" || current == "AssetAssignment" || current == "MaintenanceLog" ? "active bg-dark" : "text-white hover-light")"
+            <!-- Assets -->
+            <li class="nav-item mb-1">
+                <a class="nav-link sidebar-link d-flex justify-content-between @(current == "Asset" || current == "AssetAssignment" || current == "MaintenanceLog" ? "active" : "")"
                    data-bs-toggle="collapse" href="#assetsMenu" role="button"
                    aria-expanded="@(current == "Asset" || current == "AssetAssignment" || current == "MaintenanceLog" ? "true" : "false")">
-                    <span><i class="fas fa-laptop me-2"></i> Assets</span>
-                    <i class="fas fa-chevron-down small transition @(current == "Asset" || current == "AssetAssignment" || current == "MaintenanceLog" ? "rotate" : "")"></i>
+
+                    <span><i class="fas fa-laptop me-3"></i>Assets</span>
+                    <i class="fas fa-chevron-down small chevron"></i>
                 </a>
-                <div class="collapse submenu @(current == "Asset" || current == "AssetAssignment" || current == "MaintenanceLog" ? "show" : "")" id="assetsMenu">
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "Asset" ? "fw-bold" : "")"
+
+                <div class="collapse submenu ps-4 @(current == "Asset" || current == "AssetAssignment" || current == "MaintenanceLog" ? "show" : "")"
+                     id="assetsMenu">
+                    <a class="nav-link sub-link @(current == "Asset" ? "active-sub" : "")"
                        asp-controller="Asset" asp-action="Index">All Assets</a>
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "AssetAssignment" ? "fw-bold" : "")"
+
+                    <a class="nav-link sub-link @(current == "AssetAssignment" ? "active-sub" : "")"
                        asp-controller="AssetAssignment" asp-action="Index">Assignments</a>
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "MaintenanceLog" ? "fw-bold" : "")"
+
+                    <a class="nav-link sub-link @(current == "MaintenanceLog" ? "active-sub" : "")"
                        asp-controller="MaintenanceLog" asp-action="Index">Maintenance</a>
                 </div>
             </li>
 
-            <li>
-                <a class="nav-link d-flex justify-content-between align-items-center py-2 px-3 rounded
-                      @(current == "Supplier" || current == "Category" || current == "Branch" || current == "Department" ? "active bg-dark" : "text-white hover-light")"
+            <!-- Management -->
+            <li class="nav-item mb-1">
+                <a class="nav-link sidebar-link d-flex justify-content-between @(current == "Supplier" || current == "Category" || current == "Branch" || current == "Department" ? "active" : "")"
                    data-bs-toggle="collapse" href="#mgmtMenu" role="button"
                    aria-expanded="@(current == "Supplier" || current == "Category" || current == "Branch" || current == "Department" ? "true" : "false")">
-                    <span><i class="fas fa-cog me-2"></i> Management</span>
-                    <i class="fas fa-chevron-down small transition @(current == "Supplier" || current == "Category" || current == "Branch" || current == "Department" ? "rotate" : "")"></i>
+
+                    <span><i class="fas fa-cog me-3"></i>Management</span>
+                    <i class="fas fa-chevron-down small chevron"></i>
                 </a>
-                <div class="collapse submenu @(current == "Supplier" || current == "Category" || current == "Branch" || current == "Department" ? "show" : "")" id="mgmtMenu">
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "Supplier" ? "fw-bold" : "")"
+
+                <div class="collapse submenu ps-4 @(current == "Supplier" || current == "Category" || current == "Branch" || current == "Department" ? "show" : "")"
+                     id="mgmtMenu">
+
+                    <a class="nav-link sub-link @(current == "Supplier" ? "active-sub" : "")"
                        asp-controller="Supplier" asp-action="Index">Suppliers</a>
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "Category" ? "fw-bold" : "")"
+
+                    <a class="nav-link sub-link @(current == "Category" ? "active-sub" : "")"
                        asp-controller="Category" asp-action="Index">Categories</a>
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "Branch" ? "fw-bold" : "")"
+
+                    <a class="nav-link sub-link @(current == "Branch" ? "active-sub" : "")"
                        asp-controller="Branch" asp-action="Index">Branches</a>
-                    <a class="nav-link small d-block py-2 ps-5 pe-3 text-white hover-light @(current == "Department" ? "fw-bold" : "")"
+
+                    <a class="nav-link sub-link @(current == "Department" ? "active-sub" : "")"
                        asp-controller="Department" asp-action="Index">Departments</a>
                 </div>
             </li>
+
         </ul>
     </nav>
 
-       
-        
-    </nav>
 
     <!-- Main Area -->
     <div class="flex-grow-1 d-flex flex-column">
         <!-- Top Navbar -->
-        <header class="navbar navbar-light bg-white shadow-sm px-3">
-            <button class="btn btn-outline-primary d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+        <header class="topbar navbar shadow-sm px-3 bg-white">
+            <!-- Mobile Toggle -->
+            <button class="btn btn-outline-primary d-lg-none me-2"
+                    type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
                 <i class="fas fa-bars"></i>
             </button>
 
-            <form class="d-flex me-auto" asp-controller="Asset" asp-action="Index" method="get">
-                <input class="form-control form-control-sm me-2" type="search" placeholder="Search..." name="searchQuery" />
-                <button class="btn btn-primary btn-sm" type="submit"><i class="fas fa-search"></i></button>
+            <!-- Search -->
+            <form class="search-bar d-flex align-items-center me-auto"
+                  asp-controller="Asset" asp-action="Index" method="get">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="search"
+                           name="searchQuery"
+                           class="form-control border-start-0 shadow-none"
+                           placeholder="Search assets...">
+                </div>
             </form>
+
+            <!-- User Menu -->
             <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
                    id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="~/img/user.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>User</strong>
+                    <img src="~/img/user.png"
+                         alt="User"
+                         width="32" height="32"
+                         class="rounded-circle me-2 shadow-sm border">
+                    <span class="fw-semibold">User</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="userMenu">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Sign out</a></li>
+                    <li>
+                        <a class="dropdown-item text-danger"
+                           asp-controller="Account" asp-action="Logout">
+                            <i class="fas fa-sign-out-alt me-2"></i> Sign out
+                        </a>
+                    </li>
                 </ul>
             </div>
 
+            <!-- Optional Buttons -->
             <div>
                 @RenderSection("ActionButtons", required: false)
             </div>
         </header>
+
 
         <!-- Main Content -->
         <main id="main-content" class="flex-grow-1 p-4">

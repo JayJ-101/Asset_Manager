@@ -6,65 +6,95 @@
     GridData routes = Model.CurrentRoute.Clone();
 }
 
-@* <h2 class="mb-4">Asset Assignments</h2> *@
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-   
-    <div class="d-flex gap-3">
-            <div class="text-muted">
-                <small>Asset Total</small>
-                <div class="h5 mb-0 badge bg-primary">@Model.TotalAsset</div>
-            </div>
-             <div class="text-muted">
-                <small>Available</small>
-                <div class="h5 mb-0 text-white badge bg-success">@Model.AvailableCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Assigned </small>
-                <div class="h5 mb-0 text-white badge bg-info">@Model.ActiveAssingment</div>
-            </div>
-              <div class="text-muted">
-                <small>Maintenance</small>
-                <div class="h5 mb-0 text-white badge bg-warning">@Model.MaintenanceCount</div>
-            </div>
-            <div class="text-muted">
-                <small>Decomissioned</small>
-                <div class="h5 mb-0 text-white badge bg-danger">@Model.DecomissionedCount</div>
-            </div>
+<!-- ====== PAGE HEADER ====== -->
+<div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+    <div>
+        <h2 class="fw-bold">Asset Assignment Overview</h2>
+        <p class="text-muted">Monitor, filter, and manage all assigned Assets.</p>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0"></h2>
-        <a asp-action="Add" class="btn btn-success">
-            <i class="fas fa-plus-circle me-1"></i> Create Maintance
-        </a>
-    </div>
+    <a asp-action="Add" class="btn btn-success shadow-sm">
+        <i class="fas fa-plus-circle me-2"></i>Assign Asset
+    </a>
 </div>
 
 
-<!--Filter Card-->
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-filter me-1"></i>
-        Filters
+<!-- ====== STAT CARDS ====== -->
+<div class="row g-4 mb-4">
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <small class="text-muted">Asset Total</small>
+                <div class="h4 fw-bold text-primary">@Model.TotalAsset</div>
+            </div>
+        </div>
     </div>
+
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <small class="text-muted">Available</small>
+                <div class="h4 fw-bold text-success">@Model.AvailableCount</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <small class="text-muted">Assigned</small>
+                <div class="h4 fw-bold text-info">@Model.ActiveAssingment</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <small class="text-muted">Maintenance</small>
+                <div class="h4 fw-bold text-warning">@Model.MaintenanceCount</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <small class="text-muted">Decommissioned</small>
+                <div class="h4 fw-bold text-danger">@Model.DecomissionedCount</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ====== FILTER CARD ====== -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light fw-bold">
+        <i class="fas fa-filter me-1"></i> Filters
+    </div>
+
     <div class="card-body">
         <form asp-action="Index" method="get">
             <div class="row g-3 align-items-end">
+
                 <!-- Search -->
                 <div class="col-md-6">
                     <label for="SearchQuery" class="form-label">Search</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
                         <input type="text" id="SearchQuery" name="SearchQuery" class="form-control"
-                               value="@current.SearchQuery" placeholder="Search by employee name" />
+                               value="@current.SearchQuery" placeholder="Search employee, asset tag, etc." />
                     </div>
                 </div>
 
-                <!--Branch Dropdown-->
-                <div class="col-md-2">
+                <!-- Branch -->
+                <div class="col-md-3">
                     <label for="BranchId" class="form-label">Branch</label>
-                    <select id="BranchId" name="BranchId" class="form-select">
+                    <select id="BranchId" name="BranchId" class="form-select shadow-sm">
                         <option value="">All</option>
                         @foreach (var branch in Model.Branches)
                         {
@@ -75,10 +105,11 @@
                         }
                     </select>
                 </div>
-                <!--Department Dropdown-->
-                <div class="col-md-2">
+
+                <!-- Department -->
+                <div class="col-md-3">
                     <label for="DepartmentId" class="form-label">Department</label>
-                    <select id="DepartmentId" name="DepartmentId" class="form-select">
+                    <select id="DepartmentId" name="DepartmentId" class="form-select shadow-sm">
                         <option value="">All</option>
                         @foreach (var dept in Model.Departments)
                         {
@@ -89,91 +120,37 @@
                         }
                     </select>
                 </div>
-                
-                <!-- Apply Button -->
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+
+                <div class="col-md-12 text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Apply Filters
+                    </button>
                 </div>
 
             </div>
         </form>
     </div>
-
 </div>
 
 
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-table me-1"></i>
-       Assigned Assets
+<!-- ====== ASSIGNMENT TABLE ====== -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light fw-bold">
+        <i class="fas fa-table me-1"></i> Assigned Assets
     </div>
+
     <div class="card-body">
         <div class="table-responsive-sm">
-
-            <table class="table table-bordered table-striped table-hover table-sm">
-                <thead class="table-dark text-white">
+            <table class="table table-hover table-bordered align-middle shadow-sm">
+                <thead class="table-primary">
                     <tr>
-                        @* Asset Tag *@
-                        <th>
-                            @{
-                                routes.SetSortAndDirection(nameof(AssetAssignment.Asset.AssetName), current);
-                            }
-                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                                Asset Tag
-                            </a>
-                        </th>
-
-                        @* Employee *@
-                        <th>
-                            @{
-                                routes.SetSortAndDirection(nameof(AssetAssignment.Employee), current);
-                            }
-                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                                Employee
-                            </a>
-                        </th>
-
-                        @* Branch *@
-                        <th>
-                            @{
-                                routes.SetSortAndDirection(nameof(AssetAssignment.BranchId), current);
-                            }
-                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                                Branch
-                            </a>
-                        </th>
-
-                        @* Department *@
-                        <th>
-                            @{
-                                routes.SetSortAndDirection(nameof(AssetAssignment.DepartmentId), current);
-                            }
-                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                                Department
-                            </a>
-                        </th>
-
-                        @* Assigned Date *@
-                        <th>
-                            @{
-                                routes.SetSortAndDirection(nameof(AssetAssignment.AssginedDate), current);
-                            }
-                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                                Assigned Date
-                            </a>
-                        </th>
-
-                        @* Return Date *@
-                        <th>
-                            @{
-                                routes.SetSortAndDirection(nameof(AssetAssignment.ReturnDate), current);
-                            }
-                            <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="text-white text-decoration-none">
-                                Return Date
-                            </a>
-                        </th>
-
-                        <th>Actions</th>
+                        <th>Asset Tag</th>
+                        <th>Employee</th>
+                        <th>Branch</th>
+                        <th>Department</th>
+                        <th>Assigned Date</th>
+                        <th>Return Date</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
 
@@ -186,27 +163,39 @@
                             <td>@assignment.Branch?.BranchName</td>
                             <td>@assignment.Department?.DepartmentName</td>
                             <td>@assignment.AssginedDate.ToShortDateString()</td>
-                            <td>
-                                @(assignment.ReturnDate?.ToShortDateString() ?? "Not Returned")
-                            </td>
-                            <td>
+                            <td>@(assignment.ReturnDate?.ToShortDateString() ?? "—")</td>
+
+                            <td class="text-center">
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                         Actions
                                     </button>
-                                    <ul class="dropdown-menu">
+
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                         <li>
-                                            <a asp-action="ReturnAsset" asp-route-id="@assignment.AssingmentId" class="dropdown-item text-warning">
-                                                Return
+                                            <a asp-action="ReturnAsset"
+                                               asp-route-id="@assignment.AssingmentId"
+                                               class="dropdown-item text-warning">
+                                                <i class="fas fa-undo me-1"></i> Return
                                             </a>
                                         </li>
+
+                                        <li><hr class="dropdown-divider" /></li>
+
                                         <li>
                                             <form asp-action="Select" method="post">
                                                 <input type="hidden" name="id" value="@assignment.AssingmentId" />
-                                                <button type="submit" name="operation" value="edit" class="dropdown-item text-primary">Edit</button>
-                                                <button type="submit" name="operation" value="delete" class="dropdown-item text-danger">Delete</button>
+
+                                                <button type="submit" name="operation" value="edit" class="dropdown-item text-primary">
+                                                    <i class="fas fa-edit me-1"></i> Edit
+                                                </button>
+
+                                                <button type="submit" name="operation" value="delete" class="dropdown-item text-danger">
+                                                    <i class="fas fa-trash me-1"></i> Delete
+                                                </button>
                                             </form>
                                         </li>
+
                                     </ul>
                                 </div>
                             </td>
@@ -214,35 +203,38 @@
                     }
                 </tbody>
             </table>
-            <div>
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    routes.PageNumber = i;
-                    string active = Nav.Active(i, current.PageNumber);
-                    <a asp-action="Index" asp-all-route-data="@routes.ToDictionary()" class="btn btn-outline-primary mb-2 @active">@i</a>
-                }
-            </div>
         </div>
+
+        <!-- Pagination -->
+        <div class="mt-3">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                routes.PageNumber = i;
+                string active = Nav.Active(i, current.PageNumber);
+
+                <a asp-action="Index"
+                   asp-all-route-data="@routes.ToDictionary()"
+                   class="btn btn-sm btn-outline-primary me-1 mb-2 @active">
+                    @i
+                </a>
+            }
+        </div>
+
     </div>
 </div>
 
-
-
-
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $('#BranchId').change(function () {
-                var branchId = $(this).val();
-                $('#DepartmentId').html('<option>Loading...</option>');
+        $('#BranchId').change(function () {
+            var branchId = $(this).val();
+            $('#DepartmentId').html('<option>Loading...</option>');
 
-                $.get('/AssetAssignment/GetByBranch', { branchId: branchId }, function (data) {
-                    var options = '<option value="">All</option>';
-                    $.each(data, function (i, dept) {
-                        options += `<option value="${dept.id}">${dept.name}</option>`;
-                    });
-                    $('#DepartmentId').html(options);
+            $.get('/AssetAssignment/GetByBranch', { branchId: branchId }, function (data) {
+                var options = '<option value="">All</option>';
+                $.each(data, function (i, dept) {
+                    options += `<option value="${dept.id}">${dept.name}</option>`;
                 });
+                $('#DepartmentId').html(options);
             });
         });
     </script>
