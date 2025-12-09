@@ -37,8 +37,8 @@ namespace Asset_Manager.Controllers
 
             if (!string.IsNullOrEmpty(values.SearchQuery))
             {
-                options.Where = a =>a.Manufacturer.Contains(values.SearchQuery) || a.Model.Contains(values.SearchQuery) ||
-                    a.SerialNumber.Contains(values.SearchQuery); 
+                options.Where = a => a.Manufacturer.Contains(values.SearchQuery) || a.Model.Contains(values.SearchQuery) ||
+                    a.SerialNumber.Contains(values.SearchQuery) || a.AssetName.Contains(values.SearchQuery); 
             }
 
             if (values.CategoryId.HasValue)
