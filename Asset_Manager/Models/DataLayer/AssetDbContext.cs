@@ -1,9 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace Asset_Manager.Models
 {
-    public class AssetDbContext :DbContext
+    public class AssetDbContext : IdentityDbContext<User>
     {
         public AssetDbContext(DbContextOptions<AssetDbContext> options) : base(options)
         {
@@ -18,6 +18,8 @@ namespace Asset_Manager.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            //configure entity 
             modelBuilder.ApplyConfiguration(new AssetConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new BranchConfiguration());

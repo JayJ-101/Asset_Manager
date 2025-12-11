@@ -1,0 +1,51 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Log In";
+    Layout = "_AuthLayout";
+}
+
+<div class="card shadow-lg border-0">
+    <div class="card-body p-4">
+
+        <h3 class="text-center mb-4">Login</h3>
+
+        <form asp-action="Login" method="post" asp-route-returnUrl="@Model.ReturnUrl">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label fw-bold"></label>
+                <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-bold"></label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="form-check mb-3">
+                <input type="checkbox" asp-for="RememberMe" class="form-check-input" />
+                <label class="form-check-label" asp-for="RememberMe"></label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Log In</button>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+
+            <!-- Register -->
+            <div class="text-center mt-3">
+                <small>
+                    Not registered?
+                    <a asp-action="Register" class="text-decoration-none fw-bold">Create an account</a>
+                </small>
+            </div>
+        </form>
+
+    </div>
+</div>

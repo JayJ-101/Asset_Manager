@@ -1,4 +1,5 @@
 using Asset_Manager.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AssetDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("AssetContext")));
 
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 8;
+})
+    .AddEntityFrameworkStores<AssetDbContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -26,8 +37,15 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapAreaControllerRoute(
+    name: "admin",
+    areaName: "Admin",
+    pattern: "Admin/{controller=Asset}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "page_sort",
+    pattern: "{controller}/{action}/page/{pagenumber}/size/{pagesize}/sort/{sortfield}/{sortdirection}");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=LogIn}/{id?}/{slug?}");
 
 app.Run();
