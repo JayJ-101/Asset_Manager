@@ -11,11 +11,9 @@ builder.Services.AddDbContext<AssetDbContext>(options =>
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = false;
 })
     .AddEntityFrameworkStores<AssetDbContext>()
     .AddDefaultTokenProviders();
